@@ -15,14 +15,14 @@
 
 (function($){
 
-  var KEY          = 'livetable';
-  var KEY_OC       = KEY + '.oldcontent';
+  var NAME         = 'livetable';
   var DEFAULT_TYPE = 'text';
   
   // $.livetable
 
   $.livetable = {
     _types:          {},
+    _keys:           [NAME],
     _default:        {rememberChanges: true, selectedClass: 'selected'},
     _methods:        ['destroy', 'disable', 'enable', 'isDisabled', 'serialize', 'select', 'deselect', 'hasChanges', 'changes', 'reset'],
     _return_methods: ['isDisabled', 'serialize', 'hasChanges', 'changes'],
@@ -154,7 +154,8 @@
     // Transforms a row
 
     transformRow: function(row, form) {
-      var self = this, td, data, type, result;
+      var self = this, oldhtml = this._key('oldhtml'), td, data, type, result;
+      
       $(row).children('td').each(function() {
         td = $(this);
         data = $.livetable.columnData(td);
@@ -163,11 +164,11 @@
           type = self._types[data.type];
           
           if (form == 'fields') {
-            td.data(KEY + '.oldhtml', td.html());
+            td.data(oldhtml, td.html());
             result = type.to_field(data, td);
           }
           if (form == 'text') {
-            result = type.to_text(data, td, td.data(KEY + '.oldhtml'));
+            result = type.to_text(data, td, td.data(oldhtml));
           }
         } else {
           throw 'Livetable: invalid type "' + data.type + '"';
@@ -189,11 +190,17 @@
       return this.transformRow(row, 'fields');
     },
     
+    _key: function(name) {
+      name = NAME + '.' + name;
+      this._keys.push(name);
+      return name;
+    },
+    
     // Creates a new instance of Livetable and stores it in a table element.
     
     _create: function(table, options) {
       table = $(table);
-      table.data(KEY, new Livetable(table, options));
+      table.data(NAME, new Livetable(table, options));
     },
     
     // Get an instance of Livetable stored in a table element.
@@ -201,8 +208,8 @@
     
     _get: function(table) {
       table = $(table);
-      if (typeof(table.data(KEY)) == 'object') {
-        return table.data(KEY);
+      if (typeof(table.data(NAME)) == 'object') {
+        return table.data(NAME);
       }
       return false;
     }
@@ -215,7 +222,7 @@
     this.disabled  = false;
     this.options   = $.extend($.livetable._default, options);
     this.id        = Math.ceil(Math.random() * 10 * 1000000);
-    this.namespace = '.' + KEY + '.' + this.id;
+    this.namespace = '.' + NAME + '.' + this.id;
     this._setupEvents();
   }
   
@@ -233,8 +240,17 @@
     },
     
     destroy: function() {
+      var self = this;
       this.deselect();
-      this.table.removeData(KEY);
+      
+      // Remove all associated data
+      this.table.find('*').andSelf().each(function(index, el){
+        $.each($.livetable._keys, function(i, key){
+          $(el).removeData(key);
+        });
+      });
+      
+      // Unbined all events associated with this instance
       $('*').unbind(this.namespace);
     },
     
@@ -361,7 +377,7 @@
       id:    data.field_name,
       value: td.text()
     });
-  }, function(data, td, old_contents) {
+  }, function(data, td, oldhtml) {
     return td.find(':input').val();
   });
 
@@ -373,7 +389,7 @@
       name:  data.field_name,
       id:    data.field_name
     }).text(td.text());
-  }, function(data, td, old_contents) {
+  }, function(data, td, oldhtml) {
     return td.find(':input').text();
   });
   
