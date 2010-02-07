@@ -16,6 +16,7 @@
 (function($){
 
   var KEY          = 'livetable';
+  var KEY_OC       = KEY + '.oldcontent';
   var DEFAULT_TYPE = 'text';
   
   // $.livetable
@@ -119,6 +120,9 @@
         
         data[key] = value;
       });
+
+      // Set column
+      data.column = self.column(td);
       
       // Use defaults
       if (! data.type ) {
@@ -126,7 +130,7 @@
       }
       
       if (! data.name) {
-        data.name = data.type;
+        data.name = data.type + '-' + data.column;
       }
       
       return data;
@@ -145,6 +149,44 @@
       });
       
       return position;
+    },
+    
+    // Transforms a row
+
+    transformRow: function(row, form) {
+      var self = this, td, data, type, result;
+      $(row).children('td').each(function() {
+        td = $(this);
+        data = $.livetable.columnData(td);
+        
+        if (self.hasType(data.type)) {  
+          type = self._types[data.type];
+          
+          if (form == 'fields') {
+            td.data(KEY + '.oldhtml', td.html());
+            result = type.to_field(data, td);
+          }
+          if (form == 'text') {
+            result = type.to_text(data, td, td.data(KEY + '.oldhtml'));
+          }
+        } else {
+          throw 'Livetable: invalid type "' + data.type + '"';
+        }
+        
+        td.html(result);
+      });
+    },
+
+    // Converts a row's fields to text
+
+    rowToText: function(row) {
+      return this.transformRow(row, 'text');
+    },
+
+    // Converts a row to fields
+
+    rowToFields: function(row) {
+      return this.transformRow(row, 'fields');
     },
     
     // Creates a new instance of Livetable and stores it in a table element.
@@ -200,12 +242,22 @@
       if (this.disabled) {
         return null;
       }
-      
       row = this._findRow(row);
       if (row) {
-        if (this.deselect() !== false && this._trigger('beforeSelect', row, event) !== false) {
+        // If the row is not already selected, and deselecting other
+        // rows doesn't return false, and the beforeSelect callback
+        // doesn't return false.
+        
+        if (! row.is('.' + this.options.selectedClass) && this.deselect() !== false && this._trigger('beforeSelect', row, event) !== false) {  
           row.addClass(this.options.selectedClass);
-          this._rowToFields(row);
+          
+          $.livetable.rowToFields(row);
+          
+          // Use remember plugin if it exists
+          if ($.fn.remember && this.options.rememberChanges) {
+            row.remember();
+          }
+          
           this._trigger('onSelect', row);
           return true;
         } else {
@@ -229,7 +281,7 @@
       if (row) {
         if (this._trigger('beforeDeselect', row, event) !== false) {
           row.removeClass(this.options.selectedClass);
-          this._rowToText(row);
+          $.livetable.rowToText(row);
           this._trigger('onDeselect', row);
           return true;
         } else {
@@ -237,18 +289,6 @@
         }
       }
       return null;
-    },
-    
-    // Converts a row's fields to text
-    
-    _rowToText: function() {
-      
-    },
-    
-    // Converts a row to fields
-    
-    _rowToFields: function() {
-      
     },
     
     // Triggers an event callback. Returns result of callback, if callback
@@ -297,8 +337,8 @@
       var self = this;
       
       // Select
-      this.table.find('tr').bind('click' + this.namespace, function() {
-        self.select($(this));
+      this.table.find('tr').bind('click' + this.namespace, function(event) {
+        self.select(event.target, event);
       });
       
       // Deselect
@@ -314,36 +354,26 @@
   
   // Text
   
-  $.livetable.addType('text', function(td) {
-    var data, column, suffix;
-    data   = $.livetable.columnData(td);
-    column = $.livetable.column(td);
-    suffix = '-' + column;
-    
+  $.livetable.addType('text', function(data, td) {
     return $('<input />').attr({
       type: 'text',
-      name:  data.name + suffix,
-      id:    data.name + suffix,
+      name:  data.field_name,
+      id:    data.field_name,
       value: td.text()
     });
-  }, function(td, old_contents) {
+  }, function(data, td, old_contents) {
     return td.find(':input').val();
   });
 
   // Textarea
 
-  $.livetable.addType('text', function(td) {
-    var data, column, suffix;
-    data   = $.livetable.columnData(td);
-    column = $.livetable.column(td);
-    suffix = '-' + column;
-
+  $.livetable.addType('textarea', function(data, td) {
     return $('<textarea></textarea>').attr({
       type: 'text',
-      name:  data.name + suffix,
-      id:    data.name + suffix
+      name:  data.field_name,
+      id:    data.field_name
     }).text(td.text());
-  }, function(td, old_contents) {
+  }, function(data, td, old_contents) {
     return td.find(':input').text();
   });
   
