@@ -373,8 +373,8 @@
   $.livetable.addType('text', function(data, td) {
     return $('<input />').attr({
       type: 'text',
-      name:  data.field_name,
-      id:    data.field_name,
+      name:  data.name,
+      id:    data.name,
       value: td.text()
     });
   }, function(data, td, oldhtml) {
@@ -386,8 +386,8 @@
   $.livetable.addType('textarea', function(data, td) {
     return $('<textarea></textarea>').attr({
       type: 'text',
-      name:  data.field_name,
-      id:    data.field_name
+      name:  data.name,
+      id:    data.name
     }).text(td.text());
   }, function(data, td, oldhtml) {
     return td.find(':input').text();
