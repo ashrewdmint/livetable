@@ -195,7 +195,7 @@
       $('*').unbind(this.namespace);
     },
     
-    select: function(row) {
+    select: function(row, event) {
       if (this.disabled) {
         return;
       }
@@ -203,11 +203,14 @@
       row = this._findRow(row);
       if (row) {
         this.deselect();
-        row.addClass(this.options.selectedClass);
+        if (! this._trigger('beforeSelect', row, event) !== false) {
+          row.addClass(this.options.selectedClass);
+          this._trigger('onSelect', row);
+        }
       }
     },
     
-    deselect: function(row) {
+    deselect: function(row, event) {
       if (this.disabled) {
         return;
       }
@@ -219,8 +222,25 @@
       }
       
       if (row) {
-        row.removeClass(this.options.selectedClass);
+        if (this._trigger('beforeDeselect', row, event) !== false) {
+          row.removeClass(this.options.selectedClass);
+          this._trigger('onDeselect', row);
+        }
       }
+    },
+    
+    // Triggers an event callback. Returns result of callback, if callback
+    // was found. Returns null otherwise.
+    
+    _trigger: function() {
+      arguments = $.makeArray(arguments);
+      var callback = this.options[arguments[0]];
+      arguments.shift();
+      
+      if (typeof(callback) == 'function') {
+        return callback.apply(callback, arguments);
+      }
+      return null;
     },
     
     // Finds the currently selected row
@@ -260,9 +280,9 @@
       });
       
       // Deselect
-      $('body').bind('click' + this.namespace, function(e) {
-        if (! self._findRow(e.target)) {
-          self.deselect();
+      $('body').bind('click' + this.namespace, function(event) {
+        if (! self._findRow(event.target)) {
+          self.deselect(null, event);
         }
       });
     }
