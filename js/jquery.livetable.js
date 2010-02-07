@@ -198,22 +198,26 @@
     
     select: function(row, event) {
       if (this.disabled) {
-        return;
+        return null;
       }
       
       row = this._findRow(row);
       if (row) {
-        this.deselect();
-        if (! this._trigger('beforeSelect', row, event) !== false) {
+        if (this.deselect() !== false && this._trigger('beforeSelect', row, event) !== false) {
           row.addClass(this.options.selectedClass);
+          this._rowToFields(row);
           this._trigger('onSelect', row);
+          return true;
+        } else {
+          return false;
         }
       }
+      return null;
     },
     
     deselect: function(row, event) {
       if (this.disabled) {
-        return;
+        return null;
       }
       
       if (row) {
@@ -225,9 +229,26 @@
       if (row) {
         if (this._trigger('beforeDeselect', row, event) !== false) {
           row.removeClass(this.options.selectedClass);
+          this._rowToText(row);
           this._trigger('onDeselect', row);
+          return true;
+        } else {
+          return false;
         }
       }
+      return null;
+    },
+    
+    // Converts a row's fields to text
+    
+    _rowToText: function() {
+      
+    },
+    
+    // Converts a row to fields
+    
+    _rowToFields: function() {
+      
     },
     
     // Triggers an event callback. Returns result of callback, if callback
