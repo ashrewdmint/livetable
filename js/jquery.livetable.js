@@ -15,7 +15,8 @@
 
 (function($){
 
-  var KEY = 'livetable';
+  var KEY          = 'livetable';
+  var DEFAULT_TYPE = 'text';
   
   // $.livetable
 
@@ -121,7 +122,7 @@
       
       // Use defaults
       if (! data.type ) {
-        data.type = 'text';
+        data.type = DEFAULT_TYPE;
       }
       
       if (! data.name) {
