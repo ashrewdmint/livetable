@@ -28,22 +28,15 @@
     _return_methods: ['isDisabled', 'serialize', 'hasChanges', 'changes'],
     _events:         ['onSelect', 'beforeSelect', 'onDeselect', 'beforeDeselect', 'onSerialize', 'beforeDiscardChanges'],
     
-    // Adds a new type. Name must be a string.
-    // To_field and to_text must be functions.
-    // 
-    // The first function, to_field, is called when a row is being selected.
-    // It is passed a <td> element and must return a field element (input,
-    // textarea, select, etc.). The second function, to_text, is called
-    // when a row is being deselected, and does the opposite of to_field. It
-    // is passed a <td> element and a string containing the contents of the
-    // <td> before the row was selected. To_text must return a string, which
-    // will be inserted into the <td> in place of the field.
-    // The string may contain HTML.
-    // 
-    // Returns true if successful, returns false if otherwise.
+    // Adds a new type.
+    // Name must be a string, to_field and to_text must be functions
+    // If functions are not supplied, defaults will be used.
   
     addType: function(name, to_field, to_text) {
-      if (typeof(name) == 'string' && typeof(to_field) == 'function' && typeof(to_text) == 'function') {
+      if (typeof(name) == 'string') {
+        to_field = typeof(to_field) == 'function' ? to_field : null;
+        to_text  = typeof(to_text)  == 'function' ? to_text  : null;
+        
         this._types[name] = {to_field: to_field, to_text: to_text};
         return true;
       }
@@ -154,21 +147,42 @@
     // Transforms a row
 
     transformRow: function(row, form) {
-      var self = this, oldhtml = this._key('oldhtml'), td, data, type, result;
+      var self = this, oldhtml = this._key('oldhtml'), td, data, type, input, result;
       
       $(row).children('td').each(function() {
         td = $(this);
         data = $.livetable.columnData(td);
+        
+        // Default input
+        input = $('<input />').attr({
+          type: 'text',
+          name:  data.name,
+          id:    data.name,
+          value: td.text()
+        });
         
         if (self.hasType(data.type)) {  
           type = self._types[data.type];
           
           if (form == 'fields') {
             td.data(oldhtml, td.html());
-            result = type.to_field(data, td);
+            
+            if (type.to_field) {
+              result = type.to_field(data, td, input);
+            }
+            // Default
+            else {
+              result = input;
+            }
           }
           if (form == 'text') {
-            result = type.to_text(data, td, td.data(oldhtml));
+            if (type.to_text) {
+              result = type.to_text(data, td, td.data(oldhtml));
+            }
+            // Default
+            else {
+              result = td.find(':input').val();
+            }
           }
         } else {
           throw 'Livetable: invalid type "' + data.type + '"';
@@ -378,16 +392,7 @@
   
   // Text
   
-  $.livetable.addType('text', function(data, td) {
-    return $('<input />').attr({
-      type: 'text',
-      name:  data.name,
-      id:    data.name,
-      value: td.text()
-    });
-  }, function(data, td, oldhtml) {
-    return td.find(':input').val();
-  });
+  $.livetable.addType('text');
 
   // Textarea
 
@@ -397,19 +402,12 @@
       name:  data.name,
       id:    data.name
     }).text(td.text());
-  }, function(data, td, oldhtml) {
-    return td.find(':input').val();
   });
 
   // Number
 
-  $.livetable.addType('number', function(data, td) {
-    var input = $('<input />').attr({
-      type: 'text',
-      name:  data.name,
-      id:    data.name,
-      value: parseInt(td.text(), 10)
-    });
+  $.livetable.addType('number', function(data, td, input) {
+    input.val(parseInt(td.text(), 10));
     
     input.keypress(function(e){
       var key = String.fromCharCode(e.keyCode);
@@ -418,11 +416,7 @@
       }
     });
     
-    input.trigger('keydown');
-    
     return input;
-  }, function(data, td, oldhtml) {
-    return td.find(':input').val();
   });
   
   // Plugin
