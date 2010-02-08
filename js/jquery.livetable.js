@@ -392,7 +392,30 @@
   }, function(data, td, oldhtml) {
     return td.find(':input').text();
   });
-  
+
+  // Number
+
+  $.livetable.addType('number', function(data, td) {
+    var input = $('<input />').attr({
+      type: 'text',
+      name:  data.name,
+      id:    data.name,
+      value: parseInt(td.text(), 10)
+    });
+    
+    input.keypress(function(e){
+      var key = String.fromCharCode(e.keyCode);
+      if (key.match(/[^0-9\.]/) && ! (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+      }
+    });
+    
+    input.trigger('keydown');
+    
+    return input;
+  }, function(data, td, oldhtml) {
+    return td.find(':input').val();
+  });
   
   // Plugin
   
