@@ -307,6 +307,14 @@
       return null;
     },
     
+    option: function(name, value) {
+      if (typeof(value) == 'undefined') {
+        return this.options[name];
+      }
+      this.options[name] = value;
+      return value;
+    },
+    
     // Triggers an event callback. Returns result of callback, if callback
     // was found. Returns null otherwise.
     
@@ -421,18 +429,18 @@
   
   $.fn.livetable = function() {
     var first = arguments[0], second = arguments[1], third = arguments[2], options, method, lt;
+    lt = $.livetable._get(this);
     
-    if (first != 'options') {
+    if (first != 'option') {
       method = first;
       
       // If we need to return something specific, call method on first element
       if ($.inArray(method, $.livetable._return_methods) >= 0) {
-        lt = $.livetable._get(this);
         if (lt) {
           return lt[method]();
         }
       }
-      // Otherwise, loop through all matched elements and return jQuery object
+      // Otherwise, loop through all matched elements
       else {
         if (typeof(method) == 'object') {
           options = method;
@@ -451,10 +459,18 @@
           }
           
         });
-        return this;
       }
     }
-    return null;
+    // Options
+    else if (lt) {
+      var result = lt.option(second, third);
+      if (typeof(third) != 'undefined') {
+        return result;
+      }
+    }
+    
+    // Return jQuery object
+    return this;
   };
   
 })(jQuery);
