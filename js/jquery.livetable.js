@@ -398,7 +398,7 @@
       id:    data.name
     }).text(td.text());
   }, function(data, td, oldhtml) {
-    return td.find(':input').text();
+    return td.find(':input').val();
   });
 
   // Number
