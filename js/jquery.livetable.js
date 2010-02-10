@@ -21,12 +21,13 @@
   // $.livetable
 
   $.livetable = {
-    _types:          {},
-    _keys:           [NAME],
-    _default:        {rememberChanges: true, selectedClass: 'selected'},
-    _methods:        ['destroy', 'disable', 'enable', 'isDisabled', 'serialize', 'select', 'deselect', 'hasChanges', 'changes', 'reset'],
-    _return_methods: ['isDisabled', 'serialize', 'hasChanges', 'changes'],
-    _events:         ['onSelect', 'beforeSelect', 'onDeselect', 'beforeDeselect', 'onSerialize', 'beforeDiscardChanges'],
+    _types:           {},
+    _keys:            [NAME],
+    _default:         {rememberChanges: true, selectedClass: 'selected'},
+    _methods:         ['destroy', 'disable', 'enable', 'isDisabled', 'serialize', 'select', 'deselect', 'hasChanges', 'changes', 'resetChanges'],
+    _return_methods:  ['isDisabled', 'serialize', 'hasChanges', 'changes'],
+    _events:          ['onSelect', 'beforeSelect', 'onDeselect', 'beforeDeselect', 'onSerialize', 'beforeDiscardChanges'],
+    _remember_loaded: typeof($.fn.remember) == 'function' ? true : false,
     
     // Adds a new type.
     // Name must be a string, to_field and to_text must be functions
@@ -287,9 +288,9 @@
           
           $.livetable.rowToFields(row);
           
-          // Use remember plugin if it exists
-          if ($.fn.remember && this.options.rememberChanges) {
-            row.remember();
+          // Use remember plugin
+          if (this.options.rememberChanges) {
+            this._remember();
           }
           
           this._trigger('onSelect', row);
@@ -331,6 +332,18 @@
       }
       this.options[name] = value;
       return value;
+    },
+    
+    resetChanges: function() {
+      return this._remember('reset');
+    },
+    
+    hasChanges: function() {
+      return this._remember('hasChanges');
+    },
+    
+    changes: function() {
+      return this._remember('changes');
     },
     
     // Triggers an event callback. Returns result of callback, if callback
@@ -389,6 +402,18 @@
           self.deselect(null, event);
         }
       });
+    },
+    
+    _remember: function(method) {
+      if ($.livetable._remember_loaded) {
+        var row = this._currentRow();
+        if (row) {
+          return row.remember(method);
+        }
+      } else {
+        throw "Livetable: attempted to call remember plugin when it isn't loaded";
+      }
+      return false;
     }
   });
 
