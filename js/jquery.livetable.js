@@ -118,8 +118,8 @@
       data.column = self.column(td);
       
       // Use defaults
-      if (! data.type ) {
-        data.type = DEFAULT_TYPE;
+      if (! data.type || data.type == 'none') {
+        data.type = null;
       }
       
       if (! data.name) {
@@ -160,6 +160,10 @@
           id:    data.name,
           value: td.text()
         });
+        
+        if (! data.type) {
+          return;
+        }
         
         if (self.hasType(data.type)) {  
           type = self._types[data.type];
