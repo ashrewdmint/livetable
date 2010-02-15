@@ -283,7 +283,10 @@
         // rows doesn't return false, and the beforeSelect callback
         // doesn't return false.
         
-        if (! row.is('.' + this.options.selectedClass) && this.deselect() !== false && this._trigger('beforeSelect', row, event) !== false) {  
+        var already_selected = row.is('.' + this.options.selectedClass);
+        var deselect_not_skipped = this.deselect() !== false;
+        
+        if (! already_selected && deselect_not_skipped && this._trigger('beforeSelect', row, event) !== false) {  
           row.addClass(this.options.selectedClass);
           
           $.livetable.rowToFields(row);
