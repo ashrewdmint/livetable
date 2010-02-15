@@ -312,10 +312,19 @@
       }
       
       if (row) {
-        if (this._trigger('beforeDeselect', row, event) !== false) {
-          row.removeClass(this.options.selectedClass);
+        var not_skipped = this._trigger('beforeDeselect', row, event);
+        if (not_skipped !== false && this._remember('hasChanges')) {
+          not_skipped = this._trigger('beforeDiscardChanges', row, this._remember('changes'));
+        }
+        
+        // Only skip if the callbacks have explicitly returned false,
+        // not null or anything else that's falsy
+        if (not_skipped !== false) {
+          this._remember('restore');
           $.livetable.rowToText(row);
+          row.removeClass(this.options.selectedClass);
           this._trigger('onDeselect', row);
+          
           return true;
         } else {
           return false;
