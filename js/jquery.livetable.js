@@ -462,7 +462,7 @@
   // Number
 
   $.livetable.addType('number', function(data, td, input) {
-    input.val(parseInt(td.text(), 10));
+    input.val(parseFloat(td.text(), 10));
     
     input.keypress(function(e){
       var key = String.fromCharCode(e.keyCode);
