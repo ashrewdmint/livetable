@@ -357,6 +357,10 @@
       return this._remember('changes');
     },
     
+    serialize: function(return_obj) {
+      return this._remember('serialize', return_obj);
+    },
+    
     // Triggers an event callback. Returns result of callback, if callback
     // was found. Returns null otherwise.
     
@@ -415,11 +419,11 @@
       });
     },
     
-    _remember: function(method) {
+    _remember: function(method, arg) {
       if ($.livetable._remember_loaded) {
         var row = this._currentRow();
         if (row) {
-          return row.remember(method);
+          return row.remember(method, arg);
         }
       } else {
         throw "Livetable: attempted to call remember plugin when it isn't loaded";
@@ -471,7 +475,7 @@
       // If we need to return something specific, call method on first element
       if ($.inArray(method, $.livetable._return_methods) >= 0) {
         if (lt) {
-          return lt[method]();
+          return lt[method](second);
         }
       }
       // Otherwise, loop through all matched elements
