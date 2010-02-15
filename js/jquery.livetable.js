@@ -274,9 +274,7 @@
     },
     
     select: function(row, event) {
-      if (this.disabled) {
-        return null;
-      }
+      if (this.disabled) return null;
       
       row = this._findRow(row);
       if (row) {
@@ -310,9 +308,7 @@
     },
     
     deselect: function(row, event) {
-      if (this.disabled) {
-        return null;
-      }
+      if (this.disabled) return null;
       
       // Ensure that the row is either a real <tr> or false
       // If no row has been supplied, find the current row;
@@ -347,26 +343,32 @@
     },
     
     save: function() {
+      if (this.disabled) return null;
       return this._remember('save');
     },
     
     restore: function() {
+      if (this.disabled) return null;
       return this._remember('restore');
     },
     
     hasChanges: function() {
+      if (this.disabled) return null;
       return this._remember('hasChanges');
     },
     
     changes: function() {
+      if (this.disabled) return null;
       return this._remember('changes');
     },
     
     serialize: function(return_obj) {
+      if (this.disabled) return null;
       return this._remember('serialize', return_obj);
     },
     
     last: function() {
+      if (this.disabled) return null;
       return this._remember('last');
     },
     
