@@ -24,8 +24,8 @@
     _types:           {},
     _keys:            [NAME],
     _default:         {selectedClass: 'selected'},
-    _methods:         ['destroy', 'disable', 'enable', 'isDisabled', 'serialize', 'select', 'deselect', 'hasChanges', 'changes', 'restore', 'save'],
-    _return_methods:  ['isDisabled', 'serialize', 'hasChanges', 'changes'],
+    _methods:         ['destroy', 'disable', 'enable', 'isDisabled', 'serialize', 'select', 'deselect', 'hasChanges', 'changes', 'restore', 'save', 'last'],
+    _return_methods:  ['isDisabled', 'serialize', 'hasChanges', 'changes', 'last'],
     _events:          ['onSelect', 'beforeSelect', 'onDeselect', 'beforeDeselect', 'onSerialize', 'beforeDiscardChanges'],
     _remember_loaded: typeof($.fn.remember) == 'function' ? true : false,
     
@@ -359,6 +359,10 @@
     
     serialize: function(return_obj) {
       return this._remember('serialize', return_obj);
+    },
+    
+    last: function() {
+      return this._remember('last');
     },
     
     // Triggers an event callback. Returns result of callback, if callback
