@@ -277,16 +277,22 @@
       if (this.disabled) {
         return null;
       }
+      
       row = this._findRow(row);
       if (row) {
         // If the row is not already selected, and deselecting other
         // rows doesn't return false, and the beforeSelect callback
         // doesn't return false.
-        
+        var not_skipped = false;
         var already_selected = row.is('.' + this.options.selectedClass);
-        var deselect_not_skipped = this.deselect() !== false;
         
-        if (! already_selected && deselect_not_skipped && this._trigger('beforeSelect', row, event) !== false) {  
+        if (! already_selected) {
+          if (not_skipped = this.deselect() !== false) {
+            not_skipped = this._trigger('beforeSelect', row, event) !== false;
+          }
+        }
+        
+        if (not_skipped) {
           row.addClass(this.options.selectedClass);
           
           $.livetable.rowToFields(row);
@@ -308,21 +314,17 @@
         return null;
       }
       
-      if (row) {
-        row = this._findRow(row);
-      } else {
-        row = this._currentRow(row);
-      }
+      // Ensure that the row is either a real <tr> or false
+      // If no row has been supplied, find the current row;
+      row = row ? this._findRow(row) : this._currentRow();
       
       if (row) {
-        var not_skipped = this._trigger('beforeDeselect', row, event);
-        if (not_skipped !== false && this._remember('hasChanges')) {
-          not_skipped = this._trigger('beforeDiscardChanges', row, this._remember('changes'));
+        var not_skipped = this._trigger('beforeDeselect', row, event) != false;
+        if (not_skipped && this._remember('hasChanges')) {
+          not_skipped = this._trigger('beforeDiscardChanges', row, this._remember('changes')) != false;
         }
         
-        // Only skip if the callbacks have explicitly returned false,
-        // not null or anything else that's falsy
-        if (not_skipped !== false) {
+        if (not_skipped) {
           this._remember('restore');
           $.livetable.rowToText(row);
           row.removeClass(this.options.selectedClass);
