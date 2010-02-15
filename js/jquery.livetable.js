@@ -23,8 +23,8 @@
   $.livetable = {
     _types:           {},
     _keys:            [NAME],
-    _default:         {rememberChanges: true, selectedClass: 'selected'},
-    _methods:         ['destroy', 'disable', 'enable', 'isDisabled', 'serialize', 'select', 'deselect', 'hasChanges', 'changes', 'resetChanges'],
+    _default:         {selectedClass: 'selected'},
+    _methods:         ['destroy', 'disable', 'enable', 'isDisabled', 'serialize', 'select', 'deselect', 'hasChanges', 'changes', 'restore', 'save'],
     _return_methods:  ['isDisabled', 'serialize', 'hasChanges', 'changes'],
     _events:          ['onSelect', 'beforeSelect', 'onDeselect', 'beforeDeselect', 'onSerialize', 'beforeDiscardChanges'],
     _remember_loaded: typeof($.fn.remember) == 'function' ? true : false,
@@ -288,10 +288,8 @@
           
           $.livetable.rowToFields(row);
           
-          // Use remember plugin
-          if (this.options.rememberChanges) {
-            this._remember();
-          }
+          // Remember changes
+          this._remember();
           
           this._trigger('onSelect', row);
           return true;
@@ -334,8 +332,12 @@
       return value;
     },
     
-    resetChanges: function() {
-      return this._remember('reset');
+    save: function() {
+      return this._remember('save');
+    },
+    
+    restore: function() {
+      return this._remember('restore');
     },
     
     hasChanges: function() {
