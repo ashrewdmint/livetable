@@ -494,15 +494,15 @@
         if (typeof(method) == 'object') {
           options = method;
         }
-        
         $(this).each(function(){
           // Create
-          if (options || method == '') {
+          if (options || ! method) {
             $.livetable._create(this, options);
           }
           else {
+            // Get instance for this element
             lt = $.livetable._get(this);
-            if ($.inArray(method, $.livetable._methods) >= 0 && lt) {
+            if (lt && $.inArray(method, $.livetable._methods) >= 0) {
               lt[method](second);
             }
           }
