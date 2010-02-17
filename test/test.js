@@ -53,13 +53,13 @@ $(document).ready(function(){
   module('Basic requirements');
   
   test('$.fn.livetable()', function(){
-    equal('function', typeof($.fn.livetable), 'is a function');
+    equals('function', typeof($.fn.livetable), 'is a function');
     $('table').livetable();
   });
 
   test('disable', function(){
     var value = table.livetable('disable');
-    equal(table, value, 'should return jQuery object');
+    equals(table, value, 'should return jQuery object');
   });
   
   test('isDisabled', function(){
@@ -71,12 +71,12 @@ $(document).ready(function(){
 
   test('enable', function(){
     var value = table.livetable('enable');
-    equal(table, value, 'should return jQuery object');
+    equals(table, value, 'should return jQuery object');
   });
 
   test('destroy', function(){
     var value = table.livetable('destroy');
-    equal(table, value, 'should return jQuery object');
+    equals(table, value, 'should return jQuery object');
     
     // should remove associated data
     // should unbind associated events
