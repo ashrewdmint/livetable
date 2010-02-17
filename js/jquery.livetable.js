@@ -93,8 +93,8 @@
     
     // Uses data() to find a <td>'s name and type. Attempts to find missing
     // data by traversing up the associated column and looking in the first
-    // <th> or the first <td>. If no name is found, type will be used. If no
-    // type is found, "text" will be used.
+    // <th> or the first <td>. If no name is found, a name will be created
+    // using the type and the column, separated by a dash ("text-2").
     
     columnData: function(td) {
       var self = this, data = {}, value, column, tdh;
@@ -123,13 +123,14 @@
       // Set column
       data.column = self.column(td);
       
-      // Use defaults
-      if (! data.type || data.type == 'none') {
-        data.type = null;
+      // Default name
+      if (! data.name && data.type) {
+        data.name = data.type + '-' + data.column;
       }
       
-      if (! data.name) {
-        data.name = data.type + '-' + data.column;
+      if (! data.name && ! data.type) {
+        data.name = null;
+        data.type = null;
       }
       
       return data;

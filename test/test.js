@@ -1,6 +1,5 @@
 //  $.livetable
 //
-//  - columnData
 //  - transformRow
 //  - rowToText
 //  - rowToFields
@@ -121,6 +120,55 @@ $(document).ready(function(){
     equals(2, $.livetable.column(third),   'third <td> should have an index of 2');
     equals(0, $.livetable.column(colspan), '<td> with colspan should have an index of 0');
     equals(2, $.livetable.column(last),    'last <td> should have an index of 2');
+  });
+  
+  test('columnData', function(){
+    var table = $('                             \
+      <table>                                   \
+        <thead>                                 \
+          <tr>                                  \
+            <th class="type-foo name-baz"></th> \
+          </tr>                                 \
+        </thead>                                \
+        <tbody>                                 \
+          <tr>                                  \
+            <td class="type-bar name-biz"></td> \
+          </tr>                                 \
+          <tr>                                  \
+            <td></td>                           \
+          </tr>                                 \
+        </tbody>                                \
+      </table>\
+    ');
+    
+    var td       = table.find('td:last');
+    var expected = {column: 0, type: 'foo', name: 'baz'};
+    
+    same(expected, $.livetable.columnData(td), 'finds type, name, and column index from first <th> in the column');
+    
+    table.find('thead').remove();
+    expected.type = 'bar';
+    expected.name = 'biz';
+    
+    same(expected, $.livetable.columnData(td), 'finds type, name, and column index from first <td> in the column');
+    
+    td.addClass('type-qux name-tux');
+    expected.type = 'qux';
+    expected.name = 'tux';
+    
+    same(expected, $.livetable.columnData(td), 'finds type, name, and column index from passed <td> if it has them');
+    
+    td.removeClass('name-tux');
+    table.find('td:first').attr('class', '');
+    expected.name = 'qux-0';
+    
+    same(expected, $.livetable.columnData(td), 'if name is not found, combine the type with the column index');
+    
+    table.find('td').attr('class', '');
+    expected.name = null;
+    expected.type = null;
+    
+    same(expected, $.livetable.columnData(td), 'if no name or type is found, those properties should be null');
   });
   
   module('Basic requirements');
