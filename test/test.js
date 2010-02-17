@@ -1,10 +1,59 @@
+//  $.livetable
+//  
+//  - addType
+//  - removeType
+//  - hasType
+//  - data
+//  - columnData
+//  - column
+//  - transformRow
+//  - rowToText
+//  - rowToFields
+//  - _key
+//  - _create
+//  - _get
+//  
+//  Livetable
+//  
+//  - disable
+//  - enable
+//  - isDisabled
+//  - destroy
+//  - select
+//  - deselect
+//  - option
+//  - save
+//  - restore
+//  - hasChanges
+//  - changes
+//  - serialize
+//  - last
+//  - _trigger
+//  - _currentRow
+//  - _findRow
+//  - _setupEvents
+//  - _remember
+//  
+//  Types
+//  
+//  - text
+//  - textarea
+//  - number
+//  
+//  Plugin
+//  
+//  - Creates an instance
+//  - Calls method with argument
+//  - Sets options
+//  - Returns jQuery
+
 $(document).ready(function(){
   var table = $('table');
   
   module('Basic requirements');
   
   test('$.fn.livetable()', function(){
-    equal('function', typeof($.fn.livetable));
+    equal('function', typeof($.fn.livetable), 'is a function');
     $('table').livetable();
   });
 
