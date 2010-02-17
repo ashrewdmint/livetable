@@ -1,7 +1,6 @@
 //  $.livetable
 //
 //  - columnData
-//  - column
 //  - transformRow
 //  - rowToText
 //  - rowToFields
@@ -94,6 +93,34 @@ $(document).ready(function(){
     equals(null, $.livetable.data(el, 'foo'), 'should return null if no data found');
     equals(false, $.livetable.data(el), 'should return false if no name argument was passed');
     equals(false, $.livetable.data(), 'should return false if no element argument was passed');
+  });
+  
+  test('column', function(){
+    var table = $('               \
+      <table>                     \
+        <tr>                      \
+          <td>0</td>              \
+          <td>1</td>              \
+          <td>2</td>              \
+        </tr>                     \
+        <tr>                      \
+          <td colspan="2">0</td>  \
+          <td>2</td>              \
+        </tr>                     \
+      </table>\
+    ');
+    
+    var first   = table.find('td').eq(0);
+    var second  = table.find('td').eq(1);
+    var third   = table.find('td').eq(2);
+    var colspan = table.find('[colspan]');
+    var last    = table.find('td:last');
+    
+    equals(0, $.livetable.column(first),   'first <td> should have an index of 0');
+    equals(1, $.livetable.column(second),  'second <td> should have an index of 1');
+    equals(2, $.livetable.column(third),   'third <td> should have an index of 2');
+    equals(0, $.livetable.column(colspan), '<td> with colspan should have an index of 0');
+    equals(2, $.livetable.column(last),    'last <td> should have an index of 2');
   });
   
   module('Basic requirements');
