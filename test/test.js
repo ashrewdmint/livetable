@@ -1,7 +1,5 @@
 //  $.livetable
 //
-//  - removeType
-//  - hasType
 //  - data
 //  - columnData
 //  - column
@@ -49,7 +47,6 @@
 $(document).ready(function(){
   var table = $('table');
   
-  
   module('$.livetable');
   
   test('addType', function(){
@@ -72,11 +69,20 @@ $(document).ready(function(){
   });
   
   test('removeType', function(){
-    equals(null, $.livetable.removeType('ozymandias'), 'return null when removing a non-existent type');
     $.livetable.addType('test');
+    
     var expected = $.livetable._types['test'];
-    same(expected, $.livetable.removeType('test'), 'return the type object it removes');
+    var result = $.livetable.removeType('test')
+    
     equals(undefined, $.livetable._types['test'], 'remove a type');
+    same(expected, result, 'return the type object it removes');
+    equals(false, $.livetable.removeType('ozymandias'), 'return null when removing a non-existent type');
+  });
+  
+  test('hasType', function(){
+    $.livetable.addType('test');
+    equals(true, $.livetable.hasType('test'), 'return true when type exists');
+    equals(false, $.livetable.hasType('wondermark'), 'return false when type does not exit');
   });
   
   module('Basic requirements');
