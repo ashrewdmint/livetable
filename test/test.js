@@ -79,7 +79,7 @@ $(document).ready(function(){
   test('hasType', function(){
     $.livetable.addType('test');
     equals(true, $.livetable.hasType('test'), 'return true when type exists');
-    equals(false, $.livetable.hasType('wondermark'), 'return false when type does not exit');
+    equals(false, $.livetable.hasType('wondermark'), 'return false when type does not exist');
   });
   
   test('data', function(){
