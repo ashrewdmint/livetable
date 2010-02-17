@@ -15,8 +15,7 @@
 
 (function($){
 
-  var NAME         = 'livetable';
-  var DEFAULT_TYPE = 'text';
+  var NAME = 'livetable';
   
   // $.livetable
 
