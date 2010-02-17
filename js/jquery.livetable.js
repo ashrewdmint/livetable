@@ -45,11 +45,12 @@
     },
     
     // Removes a type and returns the type's two functions.
+    // Returns false if nothing was removed.
     
     removeType: function(name) {
       var method = this._types[name];
       delete this._types[name];
-      return method;
+      return method || false;
     },
     
     // Returns true if name is a type, false if otherwise.
