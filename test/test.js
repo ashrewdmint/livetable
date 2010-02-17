@@ -1,6 +1,5 @@
 //  $.livetable
 //
-//  - data
 //  - columnData
 //  - column
 //  - transformRow
@@ -72,7 +71,7 @@ $(document).ready(function(){
     $.livetable.addType('test');
     
     var expected = $.livetable._types['test'];
-    var result = $.livetable.removeType('test')
+    var result = $.livetable.removeType('test');
     
     equals(undefined, $.livetable._types['test'], 'remove a type');
     same(expected, result, 'return the type object it removes');
@@ -83,6 +82,18 @@ $(document).ready(function(){
     $.livetable.addType('test');
     equals(true, $.livetable.hasType('test'), 'return true when type exists');
     equals(false, $.livetable.hasType('wondermark'), 'return false when type does not exit');
+  });
+  
+  test('data', function(){
+    var el = $('<div></div>');
+    var el_class = el.clone().addClass('moose-bullwinkle');
+    var el_attr  = el.clone().attr('data-squirrel', 'rocky');
+    
+    equals('bullwinkle', $.livetable.data(el_class, 'moose'), 'should find data in classes');
+    equals('rocky', $.livetable.data(el_attr, 'squirrel'), 'should find data in HTML5 data attributes');
+    equals(null, $.livetable.data(el, 'foo'), 'should return null if no data found');
+    equals(false, $.livetable.data(el), 'should return false if no name argument was passed');
+    equals(false, $.livetable.data(), 'should return false if no element argument was passed');
   });
   
   module('Basic requirements');

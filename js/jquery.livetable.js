@@ -63,6 +63,10 @@
     // Returns data value, or null if nothing was found.
     
     data: function(el, name) {
+      if (! el || ! name) {
+        return false;
+      }
+      
       var value, attr_value, regex, match;
       el = $(el);
       
