@@ -1,8 +1,5 @@
 //  $.livetable
 //
-//  - transformRow
-//  - rowToText
-//  - rowToFields
 //  - _key
 //  - _create
 //  - _get
@@ -169,6 +166,33 @@ $(document).ready(function(){
     expected.type = null;
     
     same(expected, $.livetable.columnData(td), 'if no name or type is found, those properties should be null');
+  });
+  
+  test('transformRow', function(){
+    var row = $('                          \
+      <tr>                                 \
+        <td>Able</td>                      \
+        <td class="type-none">Baker</td>   \
+        <td class="type-text">Charlie</td> \
+      </tr>\
+    ');
+    
+    var tds = row.find('td');
+    var field_row = $.livetable.transformRow(row.clone(), 'fields');
+    var field_tds = field_row.find('td');
+    
+    var text_row  = $.livetable.transformRow(field_row.clone(), 'text');
+    var text_tds  = text_row.find('td');
+    
+    var to_field = $.livetable._types.text.to_field;
+    var data     = $.livetable.columnData(tds.eq(2));
+    var expected = to_field(data, tds.eq(2));
+    expected = $('<td></td>').append(expected).html();
+    
+    same(tds.eq(0).html(), field_tds.eq(0).html(), '<td> with no type should be ignored');
+    same(tds.eq(1).html(), field_tds.eq(1).html(), '<td> with invalid type should be ignored');
+    same(expected,         field_tds.eq(2).html(), 'transform a row to fields');
+    same(tds.eq(2).html(), text_tds.eq(2).html(),  'transform a row to text');
   });
   
   module('Basic requirements');

@@ -174,49 +174,27 @@
       
       $(row).children('td').each(function() {
         td = $(this);
-        data = $.livetable.columnData(td);
+        data = self.columnData(td);
         
-        // Default input
-        input = $('<input />').attr({
-          type: 'text',
-          name:  data.name,
-          id:    data.name,
-          value: td.text()
-        });
-        
-        if (! data.type) {
+        if (! data.type || ! self.hasType(data.type)) {
           return;
         }
         
-        if (self.hasType(data.type)) {  
-          type = self._types[data.type];
-          
-          if (form == 'fields') {
-            td.data(oldhtml, td.html());
-            
-            if (type.to_field) {
-              result = type.to_field(data, td, input);
-            }
-            // Default
-            else {
-              result = input;
-            }
-          }
-          if (form == 'text') {
-            if (type.to_text) {
-              result = type.to_text(data, td, td.data(oldhtml));
-            }
-            // Default
-            else {
-              result = td.find(':input').val();
-            }
-          }
-        } else {
-          throw 'Livetable: invalid type "' + data.type + '"';
+        type = self._types[data.type];
+        
+        if (form == 'fields') {
+          td.data(oldhtml, td.html());
+          input  = self._default_to_field(data, td);
+          result = type.to_field(data, td, input);
+        }
+        
+        if (form == 'text') {
+          result = type.to_text(data, td, td.data(oldhtml));
         }
         
         td.html(result);
       });
+      return row;
     },
 
     // Converts a row's fields to text
