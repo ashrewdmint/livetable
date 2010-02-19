@@ -1,8 +1,5 @@
 //  Livetable
 //  
-//  - disable
-//  - enable
-//  - isDisabled
 //  - destroy
 //  - select
 //  - deselect
@@ -33,9 +30,8 @@
 //  - Returns jQuery
 
 $(document).ready(function(){
-  var table = $('table');
   
-  module('$.livetable');
+  module('Singleton');
   
   test('addType', function(){
     var func1 = function() { return 1; };
@@ -213,37 +209,36 @@ $(document).ready(function(){
     same(false, $.livetable.get($('<table></table>')), 'return false when no instance found');
   });
   
-  module('Basic requirements');
+  module('Instance');
   
-  test('$.fn.livetable()', function(){
-    equals('function', typeof($.fn.livetable), 'is a function');
-    $('table').livetable();
-  });
+  var inst = new $.livetable._class('<table></table>');
 
   test('disable', function(){
-    var value = table.livetable('disable');
-    equals(table, value, 'should return jQuery object');
+    inst.disable();
+    equals(true, inst.disabled, 'set disabled to true');
+    inst.disabled = false;
   });
   
   test('isDisabled', function(){
-    table.livetable('disable');
-    equals(true, table.livetable('isDisabled'), 'should return true when disabled');
-    table.livetable('enable');
-    equals(false, table.livetable('isDisabled'), 'should return false when enabled');
+    inst.disable();
+    equals(true, inst.isDisabled(), 'return true when disabled');
+    inst.enable();
+    equals(false, inst.isDisabled(), 'return false when enabled');
   });
 
   test('enable', function(){
-    var value = table.livetable('enable');
-    equals(table, value, 'should return jQuery object');
+    inst.disable();
+    inst.enable();
+    equals(false, inst.isDisabled(), 'sets disabled to false');
   });
 
   test('destroy', function(){
-    var value = table.livetable('destroy');
-    equals(table, value, 'should return jQuery object');
-    
-    // should remove associated data
-    // should unbind associated events
-    
-    table.livetable();
+    //var value = table.livetable('destroy');
+    //equals(table, value, 'should return jQuery object');
+    //
+    //// should remove associated data
+    //// should unbind associated events
+    //
+    //table.livetable();
   });
 });
