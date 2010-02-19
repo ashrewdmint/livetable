@@ -45,13 +45,13 @@ $(document).ready(function(){
     equals(true,  $.livetable.addType('test'), 'return true if name is a string');
     equals(true,  $.livetable.addType('test2', func1, func2), 'return true if a valid name and two functions are passed');
     
-    var saved1    = $.livetable._types['test'];
-    var saved2    = $.livetable._types['test2'];
-    var expected1 = {to_field: $.livetable._default_to_field, to_text: $.livetable._default_to_text};
+    var saved1    = $.livetable.types['test'];
+    var saved2    = $.livetable.types['test2'];
+    var expected1 = {to_field: $.livetable.default_options_to_field, to_text: $.livetable.default_options_to_text};
     var expected2 = {to_field: func1, to_text: func2};    
     
-    ok(saved1, 'add first type to _types object');
-    ok(saved2, 'add second type to _types object');
+    ok(saved1, 'add first type to types object');
+    ok(saved2, 'add second type to types object');
     same(expected1, saved1, 'to_field and to_text properities should be default functions if no functions were passed');
     same(expected2, saved2, 'to_field and to_text properities should be functions if functions were passed');
   });
@@ -59,10 +59,10 @@ $(document).ready(function(){
   test('removeType', function(){
     $.livetable.addType('test');
     
-    var expected = $.livetable._types['test'];
+    var expected = $.livetable.types['test'];
     var result = $.livetable.removeType('test');
     
-    equals(undefined, $.livetable._types['test'], 'remove a type');
+    equals(undefined, $.livetable.types['test'], 'remove a type');
     same(expected, result, 'return the type object it removes');
     equals(false, $.livetable.removeType('ozymandias'), 'return null when removing a non-existent type');
   });
@@ -178,7 +178,7 @@ $(document).ready(function(){
     var text_row  = $.livetable.transformRow(field_row.clone(), 'text');
     var text_tds  = text_row.find('td');
     
-    var to_field = $.livetable._types.text.to_field;
+    var to_field = $.livetable.types.text.to_field;
     var data     = $.livetable.columnData(tds.eq(2));
     var expected = to_field(data, tds.eq(2));
     expected = $('<td></td>').append(expected).html();
@@ -189,27 +189,27 @@ $(document).ready(function(){
     same(tds.eq(2).html(), text_tds.eq(2).html(),  'transform a row to text');
   });
   
-  test('_key', function(){
+  test('key', function(){
     var name = 'cybermen';
-    var expected = $.livetable._name + '.' + name;
-    equals(expected, $.livetable._key(name), 'create a namespaced key');
+    var expected = $.livetable.name + '.' + name;
+    equals(expected, $.livetable.key(name), 'create a namespaced key');
   });
   
-  test('_create', function(){
+  test('create', function(){
     var table = $('<table></table>');
     var not_a_table = $('<div></div>');
     
-    equals(false, $.livetable._create(not_a_table), 'return false when passed non-table element');
-    var expected = $.livetable._create(table);
+    equals(false, $.livetable.create(not_a_table), 'return false when passed non-table element');
+    var expected = $.livetable.create(table);
     
-    same(expected, table.data($.livetable._name), 'create an instance of $.livetable._class and store it in the table');
+    same(expected, table.data($.livetable.name), 'create an instance of $.livetable._class and store it in the table');
   });
   
-  test('_get', function(){
+  test('get', function(){
     var table    = $('<table></table>');
-    var expected = $.livetable._create(table);
-    same(expected, $.livetable._get(table), 'get a $.livetable._class instance stored in a table');
-    same(false, $.livetable._get($('<table></table>')), 'return false when no instance found');
+    var expected = $.livetable.create(table);
+    same(expected, $.livetable.get(table), 'get a $.livetable._class instance stored in a table');
+    same(false, $.livetable.get($('<table></table>')), 'return false when no instance found');
   });
   
   module('Basic requirements');

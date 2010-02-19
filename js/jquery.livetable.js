@@ -18,17 +18,17 @@
   // $.livetable
 
   $.livetable = {
-    _name:            'livetable',
-    _types:           {},
-    _keys:            [this._name],
-    _default:         {selectedClass: 'selected'},
-    _methods:         ['destroy', 'disable', 'enable', 'isDisabled', 'serialize', 'select', 'deselect', 'hasChanges', 'changes', 'restore', 'save', 'last'],
-    _return_methods:  ['isDisabled', 'serialize', 'hasChanges', 'changes', 'last'],
-    _events:          ['onSelect', 'beforeSelect', 'onDeselect', 'beforeDeselect', 'onSerialize', 'beforeDiscardChanges'],
-    _remember_loaded: typeof($.fn.remember) == 'function' ? true : false,
+    name:             'livetable',
+    types:            {},
+    keys:             [this.name],
+    default_options:  {selectedClass: 'selected'},
+    methods:          ['destroy', 'disable', 'enable', 'isDisabled', 'serialize', 'select', 'deselect', 'hasChanges', 'changes', 'restore', 'save', 'last'],
+    return_methods:   ['isDisabled', 'serialize', 'hasChanges', 'changes', 'last'],
+    events:           ['onSelect', 'beforeSelect', 'onDeselect', 'beforeDeselect', 'onSerialize', 'beforeDiscardChanges'],
+    remember_loaded:  typeof($.fn.remember) == 'function' ? true : false,
     
     // Default to_field conversion
-    _default_to_field: function(data, td, input) {
+    default_options_to_field: function(data, td, input) {
       return $('<input />').attr({
         type: 'text',
         name:  data.name,
@@ -38,7 +38,7 @@
     },
     
     // Default to_text conversion
-    _default_to_text: function(data, td, old_content) {
+    default_options_to_text: function(data, td, old_content) {
       return td.find(':input').val();
     },
     
@@ -48,10 +48,10 @@
   
     addType: function(name, to_field, to_text) {
       if (typeof(name) == 'string') {
-        to_field = typeof(to_field) == 'function' ? to_field : this._default_to_field;
-        to_text  = typeof(to_text)  == 'function' ? to_text  : this._default_to_text;
+        to_field = typeof(to_field) == 'function' ? to_field : this.default_options_to_field;
+        to_text  = typeof(to_text)  == 'function' ? to_text  : this.default_options_to_text;
         
-        this._types[name] = {to_field: to_field, to_text: to_text};
+        this.types[name] = {to_field: to_field, to_text: to_text};
         return true;
       }
       return false;
@@ -61,15 +61,15 @@
     // Returns false if nothing was removed.
     
     removeType: function(name) {
-      var method = this._types[name];
-      delete this._types[name];
+      var method = this.types[name];
+      delete this.types[name];
       return method || false;
     },
     
     // Returns true if name is a type, false if otherwise.
     
     hasType: function(name) {
-      return typeof(this._types[name]) != 'undefined';
+      return typeof(this.types[name]) != 'undefined';
     },
     
     // Looks for data set on an element in data attributes or classes.
@@ -169,7 +169,7 @@
     // Transforms a row
 
     transformRow: function(row, form) {
-      var self = this, oldhtml = this._key('oldhtml'), td, data, type, input, result;
+      var self = this, oldhtml = this.key('oldhtml'), td, data, type, input, result;
       
       $(row).children('td').each(function() {
         td = $(this);
@@ -179,11 +179,11 @@
           return;
         }
         
-        type = self._types[data.type];
+        type = self.types[data.type];
         
         if (form == 'fields') {
           td.data(oldhtml, td.html());
-          input  = self._default_to_field(data, td);
+          input  = self.default_options_to_field(data, td);
           result = type.to_field(data, td, input);
         }
         
@@ -208,30 +208,30 @@
       return this.transformRow(row, 'fields');
     },
     
-    _key: function(name) {
-      name = this._name + '.' + name;
-      this._keys.push(name);
+    key: function(name) {
+      name = this.name + '.' + name;
+      this.keys.push(name);
       return name;
     },
     
     // Creates a new instance of Livetable and stores it in a table element.
     
-    _create: function(table, options) {
+    create: function(table, options) {
       table = $(table);
       
       if (! table.is('table')) return false;
       
-      table.data(this._name, new Livetable(table, options));
-      return table.data(this._name);
+      table.data(this.name, new Livetable(table, options));
+      return table.data(this.name);
     },
     
     // Get an instance of Livetable stored in a table element.
     // Returns false if no instance found.
     
-    _get: function(table) {
+    get: function(table) {
       table = $(table);
-      if (typeof(table.data(this._name)) == 'object') {
-        return table.data(this._name);
+      if (typeof(table.data(this.name)) == 'object') {
+        return table.data(this.name);
       }
       return false;
     }
@@ -242,9 +242,9 @@
   function Livetable(table, options) {
     this.table     = $(table);
     this.disabled  = false;
-    this.options   = $.extend($.livetable._default, options);
+    this.options   = $.extend($.livetable.default_options, options);
     this.id        = Math.ceil(Math.random() * 10 * 1000000);
-    this.namespace = '.' + $.livetable._name + '.' + this.id;
+    this.namespace = '.' + $.livetable.name + '.' + this.id;
     this._setupEvents();
   }
   
@@ -269,7 +269,7 @@
       
       // Remove all associated data
       this.table.find('*').andSelf().each(function(index, el){
-        $.each($.livetable._keys, function(i, key){
+        $.each($.livetable.keys, function(i, key){
           $(el).removeData(key);
         });
       });
@@ -436,7 +436,7 @@
     },
     
     _remember: function(method, arg) {
-      if ($.livetable._remember_loaded) {
+      if ($.livetable.remember_loaded) {
         var row = this._currentRow();
         if (row) {
           return row.remember(method, arg);
@@ -483,13 +483,13 @@
   
   $.fn.livetable = function() {
     var first = arguments[0], second = arguments[1], third = arguments[2], options, method, lt;
-    lt = $.livetable._get(this);
+    lt = $.livetable.get(this);
     
     if (first != 'option') {
       method = first;
       
       // If we need to return something specific, call method on first element
-      if ($.inArray(method, $.livetable._return_methods) >= 0) {
+      if ($.inArray(method, $.livetable.return_methods) >= 0) {
         if (lt) {
           return lt[method](second);
         }
@@ -502,12 +502,12 @@
         $(this).each(function(){
           // Create
           if (options || ! method) {
-            $.livetable._create(this, options);
+            $.livetable.create(this, options);
           }
           else {
             // Get instance for this element
-            lt = $.livetable._get(this);
-            if (lt && $.inArray(method, $.livetable._methods) >= 0) {
+            lt = $.livetable.get(this);
+            if (lt && $.inArray(method, $.livetable.methods) >= 0) {
               lt[method](second);
             }
           }
