@@ -217,9 +217,12 @@
     // Creates a new instance of Livetable and stores it in a table element.
     
     _create: function(table, options) {
-      // Check if it's a table??
       table = $(table);
+      
+      if (! table.is('table')) return false;
+      
       table.data(this._name, new Livetable(table, options));
+      return table.data(this._name);
     },
     
     // Get an instance of Livetable stored in a table element.
@@ -244,6 +247,8 @@
     this.namespace = '.' + $.livetable._name + '.' + this.id;
     this._setupEvents();
   }
+  
+  $.livetable._class = Livetable;
   
   $.extend(Livetable.prototype, {
     disable: function() {

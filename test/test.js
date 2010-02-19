@@ -1,6 +1,5 @@
 //  $.livetable
 //
-//  - _create
 //  - _get
 //  
 //  Livetable
@@ -198,6 +197,16 @@ $(document).ready(function(){
     var name = 'cybermen';
     var expected = $.livetable._name + '.' + name;
     equals(expected, $.livetable._key(name), 'create a namespaced key');
+  });
+  
+  test('_create', function(){
+    var table = $('<table></table>');
+    var not_a_table = $('<div></div>');
+    
+    equals(false, $.livetable._create(not_a_table), 'return false when passed non-table element');
+    var expected = $.livetable._create(table);
+    
+    same(expected, table.data($.livetable._name), 'create an instance of $.livetable._class and store it in the table');
   });
   
   module('Basic requirements');
