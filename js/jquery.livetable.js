@@ -28,14 +28,29 @@
     _events:          ['onSelect', 'beforeSelect', 'onDeselect', 'beforeDeselect', 'onSerialize', 'beforeDiscardChanges'],
     _remember_loaded: typeof($.fn.remember) == 'function' ? true : false,
     
+    // Default to_field conversion
+    _default_to_field: function(data, td, input) {
+      return $('<input />').attr({
+        type: 'text',
+        name:  data.name,
+        id:    data.name,
+        value: td.text()
+      });
+    },
+    
+    // Default to_text conversion
+    _default_to_text: function(data, td, old_content) {
+      return td.find(':input').val();
+    },
+    
     // Adds a new type.
     // Name must be a string, to_field and to_text must be functions
     // If functions are not supplied, defaults will be used.
   
     addType: function(name, to_field, to_text) {
       if (typeof(name) == 'string') {
-        to_field = typeof(to_field) == 'function' ? to_field : null;
-        to_text  = typeof(to_text)  == 'function' ? to_text  : null;
+        to_field = typeof(to_field) == 'function' ? to_field : this._default_to_field;
+        to_text  = typeof(to_text)  == 'function' ? to_text  : this._default_to_text;
         
         this._types[name] = {to_field: to_field, to_text: to_text};
         return true;

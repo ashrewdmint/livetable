@@ -56,12 +56,12 @@ $(document).ready(function(){
     
     var saved1    = $.livetable._types['test'];
     var saved2    = $.livetable._types['test2'];
-    var expected1 = {to_field: null, to_text: null};
+    var expected1 = {to_field: $.livetable._default_to_field, to_text: $.livetable._default_to_text};
     var expected2 = {to_field: func1, to_text: func2};    
     
     ok(saved1, 'add first type to _types object');
     ok(saved2, 'add second type to _types object');
-    same(expected1, saved1, 'to_field and to_text properities should be null if no functions were passed');
+    same(expected1, saved1, 'to_field and to_text properities should be default functions if no functions were passed');
     same(expected2, saved2, 'to_field and to_text properities should be functions if functions were passed');
   });
   
