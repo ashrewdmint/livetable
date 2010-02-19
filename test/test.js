@@ -1,7 +1,3 @@
-//  $.livetable
-//
-//  - _get
-//  
 //  Livetable
 //  
 //  - disable
@@ -207,6 +203,13 @@ $(document).ready(function(){
     var expected = $.livetable._create(table);
     
     same(expected, table.data($.livetable._name), 'create an instance of $.livetable._class and store it in the table');
+  });
+  
+  test('_get', function(){
+    var table    = $('<table></table>');
+    var expected = $.livetable._create(table);
+    same(expected, $.livetable._get(table), 'get a $.livetable._class instance stored in a table');
+    same(false, $.livetable._get($('<table></table>')), 'return false when no instance found');
   });
   
   module('Basic requirements');
