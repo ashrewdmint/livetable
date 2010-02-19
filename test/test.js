@@ -1,6 +1,5 @@
 //  $.livetable
 //
-//  - _key
 //  - _create
 //  - _get
 //  
@@ -193,6 +192,12 @@ $(document).ready(function(){
     same(tds.eq(1).html(), field_tds.eq(1).html(), '<td> with invalid type should be ignored');
     same(expected,         field_tds.eq(2).html(), 'transform a row to fields');
     same(tds.eq(2).html(), text_tds.eq(2).html(),  'transform a row to text');
+  });
+  
+  test('_key', function(){
+    var name = 'cybermen';
+    var expected = $.livetable._name + '.' + name;
+    equals(expected, $.livetable._key(name), 'create a namespaced key');
   });
   
   module('Basic requirements');

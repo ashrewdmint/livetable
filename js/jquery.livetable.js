@@ -14,14 +14,13 @@
  */
 
 (function($){
-
-  var NAME = 'livetable';
   
   // $.livetable
 
   $.livetable = {
+    _name:            'livetable',
     _types:           {},
-    _keys:            [NAME],
+    _keys:            [this._name],
     _default:         {selectedClass: 'selected'},
     _methods:         ['destroy', 'disable', 'enable', 'isDisabled', 'serialize', 'select', 'deselect', 'hasChanges', 'changes', 'restore', 'save', 'last'],
     _return_methods:  ['isDisabled', 'serialize', 'hasChanges', 'changes', 'last'],
@@ -210,7 +209,7 @@
     },
     
     _key: function(name) {
-      name = NAME + '.' + name;
+      name = this._name + '.' + name;
       this._keys.push(name);
       return name;
     },
@@ -218,8 +217,9 @@
     // Creates a new instance of Livetable and stores it in a table element.
     
     _create: function(table, options) {
+      // Check if it's a table??
       table = $(table);
-      table.data(NAME, new Livetable(table, options));
+      table.data(this._name, new Livetable(table, options));
     },
     
     // Get an instance of Livetable stored in a table element.
@@ -227,8 +227,8 @@
     
     _get: function(table) {
       table = $(table);
-      if (typeof(table.data(NAME)) == 'object') {
-        return table.data(NAME);
+      if (typeof(table.data(this._name)) == 'object') {
+        return table.data(this._name);
       }
       return false;
     }
@@ -241,7 +241,7 @@
     this.disabled  = false;
     this.options   = $.extend($.livetable._default, options);
     this.id        = Math.ceil(Math.random() * 10 * 1000000);
-    this.namespace = '.' + NAME + '.' + this.id;
+    this.namespace = '.' + $.livetable._name + '.' + this.id;
     this._setupEvents();
   }
   
@@ -517,7 +517,6 @@
         return result;
       }
     }
-    
     // Return jQuery object
     return this;
   };
