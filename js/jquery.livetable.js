@@ -70,13 +70,15 @@
       el = $(el);
       
       // Look in classes
-      regex = new RegExp(name + '-([^ ]+)');
-      match = el.attr('class').match(regex);
-      
-      if (match && typeof(match[1]) == 'string') {
-        value = match[1];
-      } else {
-        value = null;
+      if (el.attr('class')) {
+        regex = new RegExp(name + '-([^ ]+)');
+        match = el.attr('class').match(regex);
+        
+        if (match && typeof(match[1]) == 'string') {
+          value = match[1];
+        } else {
+          value = null;
+        }
       }
       
       // Look in attributes
