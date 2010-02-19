@@ -192,7 +192,8 @@ $(document).ready(function(){
   test('key', function(){
     var name = 'cybermen';
     var expected = $.livetable.name + '.' + name;
-    equals(expected, $.livetable.key(name), 'create a namespaced key');
+    equals(expected, $.livetable.key(name),   'create a namespaced key');
+    ok($.inArray(expected, $.livetable.keys), 'adds the new key to the keys array');
   });
   
   test('create', function(){
