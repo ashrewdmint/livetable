@@ -244,7 +244,7 @@
     this.disabled  = false;
     this.options   = $.extend($.livetable.default_options, options);
     this.id        = Math.ceil(Math.random() * 10 * 1000000);
-    this.namespace = '.' + $.livetable.name + '.' + this.id;
+    this.namespace = '.' + this.id;
     this._setupEvents();
   }
   
@@ -274,8 +274,8 @@
         });
       });
       
-      // Unbined all events associated with this instance
-      $('*').unbind(this.namespace);
+      // unbind all events associated with this instance
+      $('*').add(this.table).find('*').unbind(this.namespace);
     },
     
     select: function(row, event) {

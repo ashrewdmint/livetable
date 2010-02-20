@@ -211,7 +211,25 @@ $(document).ready(function(){
   
   module('Instance');
   
-  var inst = new $.livetable._class('<table></table>');
+  var table = '                                      \
+    <table class="editable">                         \
+      <thead>                                        \
+        <tr>                                         \
+          <th class="type-text name-name">Name</th>  \
+        </tr>                                        \
+      </thead>                                       \
+      <tbody>                                        \
+        <tr>                                         \
+          <td>Wooster, Bertram</td>                  \
+        </tr>                                        \
+        <tr>                                         \
+          <td>Jeeves, Reginald</td>                  \
+        </tr>                                        \
+      </tbody>                                       \
+    </table>\
+  ';
+  
+  var inst = new $.livetable._class(table);
 
   test('disable', function(){
     inst.disable();
@@ -233,12 +251,29 @@ $(document).ready(function(){
   });
 
   test('destroy', function(){
-    //var value = table.livetable('destroy');
-    //equals(table, value, 'should return jQuery object');
-    //
-    //// should remove associated data
-    //// should unbind associated events
-    //
-    //table.livetable();
+    livetable_events = false;
+    other_events     = false;
+    
+    inst.table.find('td').click(function(){});
+    
+    inst.destroy();
+    
+    $('*').add(inst.table).find('*').each(function(){
+      var events = $(this).data('events') || {};
+      
+      $.each(events, function(){
+        $.each(this, function(){
+          if (this.type && this.type == inst.id) {
+            livetable_events = true;
+          } else {
+            other_events = true;
+          }
+        });
+      });
+      
+    });
+    
+    equals(false, livetable_events, 'should clear all livetable-related events');
+    equals(true, other_events,      'should leave other events intact');
   });
 });
