@@ -413,7 +413,7 @@
         }
       });
       
-      if (row.length && inside_table) {
+      if (row.length && inside_table && ! row.parents('thead').length) {
         return row;
       }
       return false;
@@ -423,7 +423,7 @@
       var self = this;
       
       // Select
-      this.table.find('tr').bind('click' + this.namespace, function(event) {
+      this.table.children().not('thead').find('tr').bind('click' + this.namespace, function(event) {
         self.select(event.target, event);
       });
       
