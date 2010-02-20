@@ -1,6 +1,5 @@
 //  Livetable
 //  
-//  - destroy
 //  - select
 //  - deselect
 //  - option
@@ -222,7 +221,20 @@ $(document).ready(function(){
     </table>\
   ';
   
-  var inst = $.livetable.create(table);
+  var inst;
+  
+  test('instantiate', function(){
+    var options = {
+      selectedClass: 'greetings'
+    };
+    
+    inst      = $.livetable.create(table, options);
+    var inst2 = $.livetable.create(table);
+    
+    same(options, inst.options, 'save options');
+    same($.livetable.default_options, inst2.options, 'use default options');
+    notDeepEqual(inst.options, inst2.options, 'default options are not equal to custom options');
+  });
 
   test('disable', function(){
     inst.disable();

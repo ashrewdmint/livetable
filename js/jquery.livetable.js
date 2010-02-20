@@ -235,7 +235,7 @@
   function Livetable(table, options) {
     this.table      = $(table);
     this.disabled   = false;
-    this.options    = $.extend($.livetable.default_options, options);
+    this.options    = $.extend({}, $.livetable.default_options, options);
     this.id         = Math.ceil(Math.random() * 10 * 1000000);
     this.name       = $.livetable.name + this.id;
     this._setupEvents();
