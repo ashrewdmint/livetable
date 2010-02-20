@@ -240,11 +240,11 @@
   // Livetable
   
   function Livetable(table, options) {
-    this.table     = $(table);
-    this.disabled  = false;
-    this.options   = $.extend($.livetable.default_options, options);
-    this.id        = Math.ceil(Math.random() * 10 * 1000000);
-    this.namespace = '.' + this.id;
+    this.table      = $(table);
+    this.disabled   = false;
+    this.options    = $.extend($.livetable.default_options, options);
+    this.id         = Math.ceil(Math.random() * 10 * 1000000);
+    this.name       = $.livetable.name + this.id;
     this._setupEvents();
   }
   
@@ -275,7 +275,7 @@
       });
       
       // unbind all events associated with this instance
-      $('*').add(this.table).find('*').unbind(this.namespace);
+      $('*').add(this.table).find('*').unbind('.' + this.name);
     },
     
     select: function(row, event) {
@@ -423,12 +423,14 @@
       var self = this;
       
       // Select
-      this.table.children().not('thead').find('tr').bind('click' + this.namespace, function(event) {
-        self.select(event.target, event);
+      var trs = this.table.children().not('thead').find('tr');
+      this._bind(trs, 'click', function(event){
+        self.select(event.target, event);        
       });
       
       // Deselect
-      $('body').bind('click' + this.namespace, function(event) {
+      
+      this._bind('body', 'click', function(event) {
         if (! self._findRow(event.target)) {
           self.deselect(null, event);
         }
@@ -445,6 +447,10 @@
         throw "Livetable: attempted to call remember plugin when it isn't loaded";
       }
       return false;
+    },
+    
+    _bind: function(el, type, handler) {
+      $(el).bind(type + '.' + this.name, handler);
     }
   });
 

@@ -263,7 +263,8 @@ $(document).ready(function(){
       
       $.each(events, function(){
         $.each(this, function(){
-          if (this.type && this.type == inst.id) {
+          if (this.type && this.type == inst.name) {
+            console.log(this.type);
             livetable_events = true;
           } else {
             other_events = true;
