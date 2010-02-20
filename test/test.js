@@ -185,13 +185,6 @@ $(document).ready(function(){
     same(tds.eq(2).html(), text_tds.eq(2).html(),  'transform a row to text');
   });
   
-  test('key', function(){
-    var name = 'cybermen';
-    var expected = $.livetable.name + '.' + name;
-    equals(expected, $.livetable.key(name),   'create a namespaced key');
-    ok($.inArray(expected, $.livetable.keys), 'adds the new key to the keys array');
-  });
-  
   test('create', function(){
     var table = $('<table></table>');
     var not_a_table = $('<div></div>');
@@ -229,7 +222,7 @@ $(document).ready(function(){
     </table>\
   ';
   
-  var inst = new $.livetable._class(table);
+  var inst = $.livetable.create(table);
 
   test('disable', function(){
     inst.disable();
@@ -251,11 +244,10 @@ $(document).ready(function(){
   });
 
   test('destroy', function(){
-    livetable_events = false;
-    other_events     = false;
+    var livetable_events = false;
+    var other_events     = false;
     
     inst.table.find('td').click(function(){});
-    
     inst.destroy();
     
     $('*').add(inst.table).find('*').each(function(){
@@ -264,17 +256,16 @@ $(document).ready(function(){
       $.each(events, function(){
         $.each(this, function(){
           if (this.type && this.type == inst.name) {
-            console.log(this.type);
             livetable_events = true;
           } else {
             other_events = true;
           }
         });
       });
-      
     });
     
-    equals(false, livetable_events, 'should clear all livetable-related events');
-    equals(true, other_events,      'should leave other events intact');
+    equals(false,     livetable_events, 'should clear all livetable-related events');
+    equals(true,      other_events,     'should leave other events intact');
+    equals(undefined, inst.table.data($.livetable.name), 'should remove the livetable data key');
   });
 });

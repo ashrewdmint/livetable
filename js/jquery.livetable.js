@@ -20,7 +20,6 @@
   $.livetable = {
     name:             'livetable',
     types:            {},
-    keys:             [this.name],
     default_options:  {selectedClass: 'selected'},
     methods:          ['destroy', 'disable', 'enable', 'isDisabled', 'serialize', 'select', 'deselect', 'hasChanges', 'changes', 'restore', 'save', 'last'],
     return_methods:   ['isDisabled', 'serialize', 'hasChanges', 'changes', 'last'],
@@ -169,7 +168,7 @@
     // Transforms a row
 
     transformRow: function(row, form) {
-      var self = this, oldhtml = this.key('oldhtml'), td, data, type, input, result;
+      var self = this, td, data, type, input, result;
       
       $(row).children('td').each(function() {
         td = $(this);
@@ -182,13 +181,13 @@
         type = self.types[data.type];
         
         if (form == 'fields') {
-          td.data(oldhtml, td.html());
+          td.data('oldhtml', td.html());
           input  = self.default_options_to_field(data, td);
           result = type.to_field(data, td, input);
         }
         
         if (form == 'text') {
-          result = type.to_text(data, td, td.data(oldhtml));
+          result = type.to_text(data, td, td.data('oldhtml'));
         }
         
         td.html(result);
@@ -206,12 +205,6 @@
 
     rowToFields: function(row) {
       return this.transformRow(row, 'fields');
-    },
-    
-    key: function(name) {
-      name = this.name + '.' + name;
-      this.keys.push(name);
-      return name;
     },
     
     // Creates a new instance of Livetable and stores it in a table element.
@@ -267,14 +260,10 @@
       var self = this;
       this.deselect();
       
-      // Remove all associated data
-      this.table.find('*').andSelf().each(function(index, el){
-        $.each($.livetable.keys, function(i, key){
-          $(el).removeData(key);
-        });
-      });
+      // Remove livetable data
+      this.table.removeData($.livetable.name);
       
-      // unbind all events associated with this instance
+      // Unbind all events associated with this instance
       $('*').add(this.table).find('*').unbind('.' + this.name);
     },
     
