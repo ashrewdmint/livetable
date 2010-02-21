@@ -20,7 +20,7 @@
   $.livetable = {
     name:             'livetable',
     types:            {},
-    default_options:  {selectedClass: 'selected'},
+    default_options:  {selectedClass: 'selected', focusAfterSelect: true},
     methods:          ['destroy', 'disable', 'enable', 'isDisabled', 'serialize', 'select', 'deselect', 'hasChanges', 'changes', 'restore', 'save', 'last'],
     return_methods:   ['isDisabled', 'serialize', 'hasChanges', 'changes', 'last'],
     events:           ['onSelect', 'beforeSelect', 'onDeselect', 'beforeDeselect', 'onSerialize', 'beforeDiscardChanges'],
@@ -288,6 +288,10 @@
           row.addClass(this.options.selectedClass);
           
           $.livetable.rowToFields(row);
+          
+          if (event && this.options.focusAfterSelect) {
+            $(event.target).find(':input').focus();
+          }
           
           // Remember changes
           this._remember();

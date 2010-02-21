@@ -222,9 +222,7 @@ $(document).ready(function(){
   var inst;
   
   test('instantiate', function(){
-    var options = {
-      selectedClass: 'greetings'
-    };
+    var options = $.extend({}, $.livetable.default_options, {selectedClass: 'greetings'});
     
     inst      = $.livetable.create(table, options);
     var inst2 = $.livetable.create(table);
