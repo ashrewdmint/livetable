@@ -1,6 +1,5 @@
 //  Livetable
 //  
-//  - select
 //  - deselect
 //  - option
 //  - save
@@ -279,5 +278,41 @@ $(document).ready(function(){
     equals(false,     livetable_events, 'should clear all livetable-related events');
     equals(true,      other_events,     'should leave other events intact');
     equals(undefined, inst.table.data($.livetable.name), 'should remove the livetable data key');
+  });
+  
+  test('select', function(){
+    var inst2 = $.extend({}, inst);
+    
+    var selected_class = '.' + inst.options.selectedClass;
+    var row1 = inst.table.find('tbody tr:first');
+    var row2 = inst.table.find('tbody tr:eq(1)');
+    var row1clone = inst2.table.find('tbody tr:first');
+    
+    inst.select(row1);
+    $.livetable.rowToFields(row1clone).addClass(selected_class);
+  
+    same(row1, row1clone, 'transforms row contents to fields');  
+    equals(true,  row1.is(selected_class),    'has selected class');
+    equals(false, inst.select(row1),          'return false when row is already selected');
+    equals(null,  inst.select('<div></div>'), 'return null when no row is found');
+    
+    inst.select(row2);
+    
+    equals(true,  row2.is(selected_class), 'select another row');
+    equals(false, row1.is(selected_class), 'deselects other selected rows');
+    
+    inst.options.beforeDeselect = function() {
+      return false;
+    };
+    
+    equals(false, inst.select(row1), 'returns false if deslecting returns false');
+    
+    delete inst.options.beforeDeselect;
+    
+    inst.options.beforeSelect = function() {
+      return false;
+    };
+    
+    equals(false, inst.select(row1), 'returns false if before select event returns false');
   });
 });
