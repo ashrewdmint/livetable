@@ -396,8 +396,11 @@
         row = row.parents('tr:first');
       }
       
-      row.parents('table').each(function(){
-        if ($(this)[0] == self.table[0]) {
+      this.table.find('tr').each(function(){
+        var tr = $(this);
+        
+        if (tr[0] == row[0]) {
+          row = tr;
           inside_table = true;
         }
       });
