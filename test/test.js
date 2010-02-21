@@ -1,6 +1,5 @@
 //  Livetable
 //  
-//  - deselect
 //  - option
 //  - save
 //  - restore
@@ -281,17 +280,12 @@ $(document).ready(function(){
   });
   
   test('select', function(){
-    var inst2 = $.extend({}, inst);
-    
     var selected_class = '.' + inst.options.selectedClass;
     var row1 = inst.table.find('tbody tr:first');
     var row2 = inst.table.find('tbody tr:eq(1)');
-    var row1clone = inst2.table.find('tbody tr:first');
     
     inst.select(row1);
-    $.livetable.rowToFields(row1clone).addClass(selected_class);
-  
-    same(row1, row1clone, 'transforms row contents to fields');  
+    
     equals(true,  row1.is(selected_class),    'has selected class');
     equals(false, inst.select(row1),          'return false when row is already selected');
     equals(null,  inst.select('<div></div>'), 'return null when no row is found');
@@ -313,6 +307,42 @@ $(document).ready(function(){
       return false;
     };
     
-    equals(false, inst.select(row1), 'returns false if before select event returns false');
+    equals(false, inst.select(row1), 'returns false if beforeSelect returns false');
+    
+    delete inst.options.beforeSelect;
+  });
+  
+  test('deselect', function(){
+    var selected_class = '.' + inst.options.selectedClass;
+    var row1 = inst.table.find('tbody tr:first');
+    
+    inst.select(row1);
+    
+    equals(true, row1.is(selected_class), 'select row');
+    
+    inst.deselect(row1);
+    
+    equals(false, row1.is(selected_class), 'deselect row');
+    equals(null, inst.deselect('<div></div>'), 'return null if row not found');
+    
+    inst.options.beforeDeselect = function() {
+      return false;
+    };
+    
+    equals(false, inst.deselect(row1), 'return false if beforeDeselect returns false');
+    
+    delete inst.options.beforeDeselect;
+    
+    inst.select(row1);
+    
+    row1.find(':input').val('foo!');
+    
+    inst.options.beforeDiscardChanges = function() {
+      return false;
+    };
+    
+    equals(false, inst.deselect(row1), 'return false if beforeDiscardChanges returns false');
+    
+    delete inst.options.beforeDiscardChanges;
   });
 });
