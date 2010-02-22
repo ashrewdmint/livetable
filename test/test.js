@@ -26,6 +26,28 @@
 //  - Sets options
 //  - Returns jQuery
 
+QUnit.reset = function() {
+  table = '                                          \
+    <table class="editable">                         \
+      <thead>                                        \
+        <tr>                                         \
+          <th class="type-text name-name">Name</th>  \
+        </tr>                                        \
+      </thead>                                       \
+      <tbody>                                        \
+        <tr>                                         \
+          <td>Wooster, Bertram</td>                  \
+        </tr>                                        \
+        <tr>                                         \
+          <td>Jeeves, Reginald</td>                  \
+        </tr>                                        \
+      </tbody>                                       \
+    </table>\
+  ';
+  
+  inst = $.livetable.create(table);
+};
+
 $(document).ready(function(){
   
   module('Singleton');
@@ -201,26 +223,6 @@ $(document).ready(function(){
   
   module('Instance');
   
-  var table = '                                      \
-    <table class="editable">                         \
-      <thead>                                        \
-        <tr>                                         \
-          <th class="type-text name-name">Name</th>  \
-        </tr>                                        \
-      </thead>                                       \
-      <tbody>                                        \
-        <tr>                                         \
-          <td>Wooster, Bertram</td>                  \
-        </tr>                                        \
-        <tr>                                         \
-          <td>Jeeves, Reginald</td>                  \
-        </tr>                                        \
-      </tbody>                                       \
-    </table>\
-  ';
-  
-  var inst;
-  
   test('instantiate', function(){
     var options = $.extend({}, $.livetable.default_options, {selectedClass: 'greetings'});
     
@@ -306,8 +308,6 @@ $(document).ready(function(){
     };
     
     equals(false, inst.select(row1), 'returns false if beforeSelect returns false');
-    
-    delete inst.options.beforeSelect;
   });
   
   test('deselect', function(){
@@ -340,7 +340,5 @@ $(document).ready(function(){
     };
     
     equals(false, inst.deselect(row1), 'return false if beforeDiscardChanges returns false');
-    
-    delete inst.options.beforeDiscardChanges;
   });
 });
