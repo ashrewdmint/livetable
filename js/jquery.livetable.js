@@ -420,7 +420,6 @@
       });
       
       // Deselect
-      
       this._bind('body', 'click', function(event) {
         if (! self._findRow(event.target)) {
           self.deselect(null, event);

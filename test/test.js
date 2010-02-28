@@ -1,6 +1,5 @@
 //  Livetable
 //  
-//  - _setupEvents
 //  - _remember
 //  
 //  Types
@@ -446,5 +445,21 @@ $(document).ready(function(){
     var tr = inst.table.find('tbody tr:first');
     equal(tr.html(), inst._findRow(td).html(), 'return <tr> inside of table');
     equal(tr.html(), inst._findRow(tr).html(), 'return <tr> when <tr> passed');
+  });
+  
+  test('_setupEvents', function(){
+    var tr = inst.table.find('tbody tr:first');
+    inst.table.find('*').add('body').unbind('.' + inst.name);
+    
+    tr.click();
+    equal(null, inst._currentRow(), 'before calling _setupEvents(), clicking the row does not select it');
+    
+    inst._setupEvents();
+    
+    tr.click();
+    ok(inst._currentRow(), 'after calling _setupEvents() clicking the row selects it');
+    
+    $('body').click();
+    equal(null, inst._currentRow(), 'clicking the body deselects the row');
   });
 });
