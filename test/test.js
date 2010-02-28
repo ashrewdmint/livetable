@@ -1,6 +1,5 @@
 //  Livetable
 //  
-//  - option
 //  - save
 //  - restore
 //  - hasChanges
@@ -340,5 +339,12 @@ $(document).ready(function(){
     };
     
     equals(false, inst.deselect(row1), 'return false if beforeDiscardChanges returns false');
+  });
+  
+  test('option', function(){
+    equals(inst.options.selectedClass, inst.option('selectedClass'), 'return option value');
+    
+    inst.option('economist', 'mises');
+    equals(inst.options.economist, 'mises', 'sets option value');
   });
 });
