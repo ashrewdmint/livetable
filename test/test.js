@@ -417,4 +417,15 @@ $(document).ready(function(){
     same(inst.last(), expected, 'work when disabled');
     same(inst.last(true), expected_obj, 'work when disabled');
   });
+  
+  test('_trigger', function(){
+     inst.options.someCallback = function(arg) {
+       return arg;
+     };
+     
+     var arg = 'water buffalo';
+     
+     equal(arg, inst._trigger('someCallback', arg), 'calls function in options with arguments');
+     equal(null, inst._trigger('idontexist'), 'return null when callback not found');
+  });
 });

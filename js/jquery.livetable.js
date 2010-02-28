@@ -371,8 +371,7 @@
     
     _trigger: function() {
       arguments = $.makeArray(arguments);
-      var callback = this.options[arguments[0]];
-      arguments.shift();
+      var callback = this.options[arguments.shift()];
       
       if (typeof(callback) == 'function') {
         return callback.apply(callback, arguments);
