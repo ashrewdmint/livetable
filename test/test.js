@@ -1,6 +1,5 @@
 //  Livetable
 //  
-//  - _findRow
 //  - _setupEvents
 //  - _remember
 //  
@@ -436,5 +435,16 @@ $(document).ready(function(){
     
     inst.deselect();
     equal(null, inst._currentRow(), 'return null when not found');
+  });
+  
+  test('_findRow', function(){
+    thead_row = inst.table.find('thead tr');
+    equal(null, inst._findRow(thead_row), 'return null when row is inside of thead');
+    equal(null, inst._findRow('<tr><td>Hi</td></tr>'), 'return null when row is not inside of table');
+    
+    var td = inst.table.find('td:first');
+    var tr = inst.table.find('tbody tr:first');
+    equal(tr.html(), inst._findRow(td).html(), 'return <tr> inside of table');
+    equal(tr.html(), inst._findRow(tr).html(), 'return <tr> when <tr> passed');
   });
 });
