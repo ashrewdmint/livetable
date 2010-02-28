@@ -1,7 +1,5 @@
 //  Livetable
 //  
-//  - _trigger
-//  - _currentRow
 //  - _findRow
 //  - _setupEvents
 //  - _remember
@@ -427,5 +425,16 @@ $(document).ready(function(){
      
      equal(arg, inst._trigger('someCallback', arg), 'calls function in options with arguments');
      equal(null, inst._trigger('idontexist'), 'return null when callback not found');
+  });
+  
+  test('_currentRow', function(){
+    var tr = inst.table.find('tbody tr:first');
+    inst.select(tr);
+    
+    tr = inst.table.find('.selected');
+    equal(tr.html(), inst._currentRow().html(), 'return currently selected row');
+    
+    inst.deselect();
+    equal(null, inst._currentRow(), 'return null when not found');
   });
 });

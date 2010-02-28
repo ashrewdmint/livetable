@@ -407,7 +407,7 @@
       if (row.length && inside_table && ! row.parents('thead').length) {
         return row;
       }
-      return false;
+      return null;
     },
     
     _setupEvents: function() {
