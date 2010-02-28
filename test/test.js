@@ -1,11 +1,5 @@
 //  Livetable
 //  
-//  - save
-//  - restore
-//  - hasChanges
-//  - changes
-//  - serialize
-//  - last
 //  - _trigger
 //  - _currentRow
 //  - _findRow
@@ -346,5 +340,77 @@ $(document).ready(function(){
     
     inst.option('economist', 'mises');
     equals(inst.options.economist, 'mises', 'sets option value');
+  });
+  
+  test('save', function(){
+    inst.select(inst.table.find('tbody tr:first'));
+    
+    inst.disable();
+    equals(null, inst.save(), 'return null when disabled');
+    inst.enable();
+    same(inst._remember('save'), inst.save(), "return result of _remember('save')");
+  });
+  
+  test('restore', function(){
+    inst.select(inst.table.find('tbody tr:first'));
+    
+    inst.disable();
+    equals(null, inst.restore(), 'return null when disabled');
+    inst.enable();
+    same(inst._remember('restore'), inst.restore(), "return result of _remember('restore')");
+  });
+
+  test('hasChanges', function(){
+    var tr = inst.table.find('tbody tr:first');
+    inst.select(tr);
+    
+    tr.find(':input').val('boo!');
+    var expected = inst._remember('hasChanges');
+    
+    same(expected, inst.hasChanges(), "return result of _remember('hasChanges')");
+    inst.disable();
+    same(expected, inst.hasChanges(), 'work when disabled');
+  });
+
+  test('changes', function(){
+    var tr = inst.table.find('tbody tr:first');
+    inst.select(tr);
+    
+    tr.find(':input').val('boo!');
+    var expected = inst._remember('changes');
+    
+    same(expected, inst.changes(), "return result of _remember('changes')");
+    inst.disable();
+    same(expected, inst.changes(), 'work when disabled');
+  });
+
+  test('serialize', function(){
+    var tr = inst.table.find('tbody tr:first');
+    inst.select(tr);
+    
+    var expected     = inst._remember('serialize');
+    var expected_obj = inst._remember('serialize', true);
+    
+    same(inst.serialize(), expected, "return result of _remember('serialize')");
+    same(inst.serialize(true), expected_obj, "return result of _remember('serialize', true)");
+    
+    inst.disable();
+    same(inst.serialize(), expected, 'work when disabled');
+    same(inst.serialize(true), expected_obj, 'work when disabled');
+  });
+
+  test('last', function(){
+    var tr = inst.table.find('tbody tr:first');
+    inst.select(tr);
+    
+    var expected     = inst._remember('last');
+    var expected_obj = inst._remember('last', true);
+
+    same(inst.last(), expected, "return result of _remember('last')");
+    same(inst.last(true), expected_obj, "return result of _remember('last', true)");
+
+    inst.disable();
+    same(inst.last(), expected, 'work when disabled');
+    same(inst.last(true), expected_obj, 'work when disabled');
   });
 });

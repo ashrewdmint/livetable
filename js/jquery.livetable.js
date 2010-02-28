@@ -351,23 +351,19 @@
     },
     
     hasChanges: function() {
-      if (this.disabled) return null;
       return this._remember('hasChanges');
     },
     
     changes: function() {
-      if (this.disabled) return null;
       return this._remember('changes');
     },
     
     serialize: function(return_obj) {
-      if (this.disabled) return null;
       return this._remember('serialize', return_obj);
     },
     
-    last: function() {
-      if (this.disabled) return null;
-      return this._remember('last');
+    last: function(return_obj) {
+      return this._remember('last', return_obj);
     },
     
     // Triggers an event callback. Returns result of callback, if callback
