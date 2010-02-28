@@ -340,6 +340,10 @@ $(document).ready(function(){
     
     inst.option('economist', 'mises');
     equals(inst.options.economist, 'mises', 'sets option value');
+    
+    inst.disable();
+    equals('mises', inst.option('economist', 'keynes'), 'return option value when disabled');
+    equals(inst.options.economist, 'mises', 'does not set option when disabled');
   });
   
   test('save', function(){

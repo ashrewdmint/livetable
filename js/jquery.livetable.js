@@ -333,7 +333,7 @@
     },
     
     option: function(name, value) {
-      if (typeof(value) == 'undefined') {
+      if (typeof(value) == 'undefined' || this.disabled) {
         return this.options[name];
       }
       this.options[name] = value;
