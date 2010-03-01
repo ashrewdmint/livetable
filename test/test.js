@@ -15,7 +15,8 @@
 //  - Sets options
 //  - Returns jQuery
 
-QUnit.reset = function() {
+QUnit.testStart = function() {
+  
   table = '                                          \
     <table class="editable">                         \
       <thead>                                        \
