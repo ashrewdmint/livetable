@@ -486,16 +486,33 @@ test('_remember', function(){
 module('Types');
 
 test('text', function(){
-  var data = {name: 'diogenes'};
-  var td   = $('<td>sinope</td>');
+  var name = 'diogenes';
+  var data = {name: name};
+  var td   = $('<td></td>').text(name);
   var input = $.livetable.types.text.to_field(data, td);
   
   equal(input.get(0).nodeName.toLowerCase(), 'input', 'return an input tag');
-  equal(input.attr('name'), 'diogenes', 'sets correct name');
-  equal(input.attr('id'), 'diogenes', 'sets correct id');
-  equal(input.val(), 'sinope', 'sets correct value');
+  equal(input.attr('name'), name, 'sets correct name');
+  equal(input.attr('id'), name, 'sets correct id');
+  equal(input.val(), name, 'sets correct value');
   
-  var text = $.livetable.types.text.to_text(data, $('<td></td>').append(input));
+  var text = $.livetable.types.text.to_text(data, td.empty().append(input));
   
-  equal(td.text(), text, 'return value of input field when calling to_text()');
+  equal(name, text, 'to_text() should return value of input field');
+});
+
+test('textarea', function(){
+  var name = 'rachmaninoff';
+  var data = {name: name};
+  var td   = $('<td></td>').text(name);
+  var input = $.livetable.types.textarea.to_field(data, td);
+  
+  equal(input.get(0).nodeName.toLowerCase(), 'textarea', 'return a textarea tag');
+  equal(input.attr('name'), name, 'sets correect name');
+  equal(input.attr('id'), name, 'sets correect id');
+  equal(input.val(), name, 'sets correct value');
+  equal(input.text(), name, 'sets correct text');
+  
+  var text = $.livetable.types.textarea.to_text(data, td.empty().append(input));
+  equal(name, text, 'to_text() should return value of textarea');
 });
