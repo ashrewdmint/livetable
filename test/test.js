@@ -1,6 +1,5 @@
 //  Types
 //
-//  - textarea
 //  - number
 //  
 //  Plugin
@@ -486,33 +485,53 @@ test('_remember', function(){
 module('Types');
 
 test('text', function(){
+  var type = 'text';
   var name = 'diogenes';
   var data = {name: name};
   var td   = $('<td></td>').text(name);
-  var input = $.livetable.types.text.to_field(data, td);
+  var input = $.livetable.types[type].to_field(data, td);
   
-  equal(input.get(0).nodeName.toLowerCase(), 'input', 'return an input tag');
+  equal(input.get(0).nodeName.toLowerCase(), 'input', 'return an input field');
   equal(input.attr('name'), name, 'sets correct name');
   equal(input.attr('id'), name, 'sets correct id');
   equal(input.val(), name, 'sets correct value');
   
-  var text = $.livetable.types.text.to_text(data, td.empty().append(input));
+  var text = $.livetable.types[type].to_text(data, td.empty().append(input));
   
-  equal(name, text, 'to_text() should return value of input field');
+  equal(text, name, 'to_text() should return value of input field');
 });
 
 test('textarea', function(){
+  var type = 'textarea';
   var name = 'rachmaninoff';
   var data = {name: name};
   var td   = $('<td></td>').text(name);
-  var input = $.livetable.types.textarea.to_field(data, td);
+  var input = $.livetable.types[type].to_field(data, td);
   
-  equal(input.get(0).nodeName.toLowerCase(), 'textarea', 'return a textarea tag');
-  equal(input.attr('name'), name, 'sets correect name');
-  equal(input.attr('id'), name, 'sets correect id');
+  equal(input.get(0).nodeName.toLowerCase(), 'textarea', 'return a textarea');
+  equal(input.attr('name'), name, 'sets correct name');
+  equal(input.attr('id'), name, 'sets correct id');
   equal(input.val(), name, 'sets correct value');
   equal(input.text(), name, 'sets correct text');
   
-  var text = $.livetable.types.textarea.to_text(data, td.empty().append(input));
-  equal(name, text, 'to_text() should return value of textarea');
+  var text = $.livetable.types[type].to_text(data, td.empty().append(input));
+  equal(text, name, 'to_text() should return value of textarea');
+});
+
+test('number', function(){
+  var type = 'number';
+  var name = 'babbage';
+  var val  = -17.91;
+  var data = {name: name};
+  var td   = $('<td></td>').text(val + name);
+  var default_input = $.livetable.default_options_to_field(data, td);
+  var input = $.livetable.types[type].to_field(data, td, default_input);
+
+  equal(input.get(0).nodeName.toLowerCase(), 'input', 'return an input field');
+  equal(input.attr('name'), name, 'sets correct name');
+  equal(input.attr('id'), name, 'sets correct id');
+  equal(input.val(), val, 'sets correct value');
+  
+  var text = $.livetable.types[type].to_text(data, td.empty().append(input));
+  equal(text, val, 'to_text() should return value of input field');
 });

@@ -468,9 +468,10 @@
   $.livetable.addType('number', function(data, td, input) {
     input.val(parseFloat(td.text(), 10));
     
+    // Limit to numeric characters, plus . and -
     input.keypress(function(e){
       var key = String.fromCharCode(e.keyCode);
-      if (key.match(/[^0-9\.]/) && ! (e.ctrlKey || e.metaKey)) {
+      if (key.match(/[^0-9\.\-]/) && ! (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
       }
     });
