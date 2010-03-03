@@ -24,7 +24,10 @@
     methods:          ['destroy', 'disable', 'enable', 'isDisabled', 'serialize', 'select', 'deselect', 'hasChanges', 'changes', 'restore', 'save', 'last'],
     return_methods:   ['isDisabled', 'serialize', 'hasChanges', 'changes', 'last'],
     events:           ['onSelect', 'beforeSelect', 'onDeselect', 'beforeDeselect', 'onSerialize', 'beforeDiscardChanges'],
-    remember_loaded:  typeof($.fn.remember) == 'function' ? true : false,
+    
+    is_remember_loaded:  function() {
+      return typeof($.fn.remember) == 'function';
+    },
     
     // Default to_field conversion
     default_options_to_field: function(data, td, input) {
@@ -428,7 +431,7 @@
     },
     
     _remember: function(method, arg) {
-      if ($.livetable.remember_loaded) {
+      if ($.livetable.is_remember_loaded()) {
         var row = this._currentRow();
         if (row) {
           return row.remember(method, arg);

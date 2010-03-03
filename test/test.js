@@ -461,3 +461,30 @@ test('_setupEvents', function(){
   $('body').click();
   equal(null, inst._currentRow(), 'clicking the body deselects the row');
 });
+
+test('_remember', function(){
+  $.fn.remember_old = $.fn.remember;
+  delete $.fn.remember;
+  
+  var error;
+  
+  try {
+    inst._remember('foo');
+  } catch (e) {
+    error = e;
+  }
+  
+  ok(error, 'Throw error when $.remember plugin not being used');
+  
+  $.fn.remember = function(arg1, arg2) {
+    return arg1 + arg2;
+  };
+  
+  equal(inst._remember(), false, 'return false when there is no current row');
+  
+  inst.select(inst.table.find('tbody tr:first'));
+  equal(inst._remember('hel', 'lo'), 'hello', 'call $.fn.remember(); when there is a current row');
+  
+  $.fn.remember = $.fn.remember_old;
+  delete $.fn.remember_old;
+});
