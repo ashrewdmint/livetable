@@ -1,10 +1,5 @@
-//  Livetable
-//  
-//  - _remember
-//  
 //  Types
-//  
-//  - text
+//
 //  - textarea
 //  - number
 //  
@@ -467,7 +462,6 @@ test('_remember', function(){
   delete $.fn.remember;
   
   var error;
-  
   try {
     inst._remember('foo');
   } catch (e) {
@@ -487,4 +481,21 @@ test('_remember', function(){
   
   $.fn.remember = $.fn.remember_old;
   delete $.fn.remember_old;
+});
+
+module('Types');
+
+test('text', function(){
+  var data = {name: 'diogenes'};
+  var td   = $('<td>sinope</td>');
+  var input = $.livetable.types.text.to_field(data, td);
+  
+  equal(input.get(0).nodeName.toLowerCase(), 'input', 'return an input tag');
+  equal(input.attr('name'), 'diogenes', 'sets correct name');
+  equal(input.attr('id'), 'diogenes', 'sets correct id');
+  equal(input.val(), 'sinope', 'sets correct value');
+  
+  var text = $.livetable.types.text.to_text(data, $('<td></td>').append(input));
+  
+  equal(td.text(), text, 'return value of input field when calling to_text()');
 });
