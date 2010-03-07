@@ -20,7 +20,16 @@
   $.livetable = {
     name:             'livetable',
     types:            {},
-    default_options:  {selectedClass: 'selected', focusAfterSelect: true},
+    default_options:  {
+      selectedClass: 'selected',
+      focusAfterSelect: true,
+      beforeDeselect: function(td) {
+        td.parents('table').livetable('save');
+      },
+      beforeDiscardChanges: function() {
+        return confirm('Are you sure you want to discard your changes?');
+      }
+    },
     methods:          ['destroy', 'disable', 'enable', 'isDisabled', 'serialize', 'select', 'deselect', 'hasChanges', 'changes', 'restore', 'save', 'last'],
     return_methods:   ['isDisabled', 'serialize', 'hasChanges', 'changes', 'last'],
     events:           ['onSelect', 'beforeSelect', 'onDeselect', 'beforeDeselect', 'onSerialize', 'beforeDiscardChanges'],
