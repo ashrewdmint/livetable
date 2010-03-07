@@ -5,7 +5,7 @@
  * Copyright (c) 2010 Andrew Smith
  * Examples and documentation at: http://github.com/ashrewdmint/livetable
  * 
- * Version: 0.0.0 (date)
+ * Version: 1.0.0 (date)
  * Requires: jQuery v1.3+
  * 
  * Dual licensed under the MIT and GPL licenses:
