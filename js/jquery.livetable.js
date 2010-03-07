@@ -76,14 +76,16 @@
     
     // Looks for data set on an element in data attributes or classes.
     // Returns data value, or null if nothing was found.
+    // Sets data if value argument is supplied.
     
-    data: function(el, name) {
+    data: function(el, name, value) {
       if (! el || ! name) {
         return false;
       }
       
-      var value, attr_value, regex, match;
+      var attr_value, regex, match, result, set_value;
       el = $(el);
+      set_value = typeof(value) != 'undefined';
       
       // Look in classes
       if (el.attr('class')) {
@@ -91,21 +93,32 @@
         match = el.attr('class').match(regex);
         
         if (match && typeof(match[1]) == 'string') {
-          value = match[1];
-        } else {
-          value = null;
+          result = match[1];
+          
+          // Set data
+          if (set_value) {
+            el.removeClass(match[0]);
+            el.addClass(name + '-' + value);
+            result = value;
+          }
         }
       }
       
       // Look in attributes
-      if (! value) {
+      if (! result) {
         attr_value = el.attr('data-' + name);
         if (typeof(attr_value) == 'string' && attr_value !== '') {
-          value = attr_value;
+          result = attr_value;
+          
+          // Set value
+          if (set_value) {
+            el.attr('data-' + name, value);
+            result = value;
+          }
         }
       }
       
-      return value;
+      return result;
     },
     
     // Uses data() to find a <td>'s name and type. Attempts to find missing
