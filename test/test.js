@@ -451,7 +451,7 @@ test('_setupEvents', function(){
   inst.table.find('*').add('body').unbind('.' + inst.name);
   
   tr.click();
-  equal(null, inst._currentRow(), 'before calling _setupEvents(), clicking the row does not select it');
+  equal(inst._currentRow(), null, 'before calling _setupEvents(), clicking the row does not select it');
   
   inst._setupEvents();
   
@@ -459,7 +459,14 @@ test('_setupEvents', function(){
   ok(inst._currentRow(), 'after calling _setupEvents() clicking the row selects it');
   
   $('body').click();
-  equal(null, inst._currentRow(), 'clicking the body deselects the row');
+  equal(inst._currentRow(), null, 'clicking the body deselects the row');
+  
+  tr.find('td:first').append('<b>Hello</b>');
+  $('body').append(inst.table);
+  tr.find('b').click();
+  
+  ok(inst._currentRow(), 'clicking on an element inside a td selects the row');
+  inst.table.remove();
 });
 
 test('_remember', function(){

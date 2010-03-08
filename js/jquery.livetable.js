@@ -348,7 +348,6 @@
           $.livetable.rowToText(row);
           row.removeClass(this.options.selectedClass);
           this._trigger('onDeselect', row);
-          
           return true;
         } else {
           return false;
@@ -441,7 +440,11 @@
       // Select
       var trs = this.table.children().not('thead').find('tr');
       this._bind(trs, 'click', function(event){
-        self.select(event.target, event);        
+        self.select(event.target, event);
+        
+        // http://www.quirksmode.org/js/events_order.html
+        event.cancelBubble = true;
+        if (event.stopPropagation) event.stopPropagation();
       });
       
       // Deselect
