@@ -274,20 +274,20 @@ test('select', function(){
   
   inst.select(row1);
   
-  equals(true,  row1.is(selected_class),    'has selected class');
-  equals(false, inst.select(row1),          'return false when row is already selected');
-  equals(null,  inst.select('<div></div>'), 'return null when no row is found');
-  
+  equals(row1.is(selected_class), true, 'has selected class');
+  equals(inst.select(row1), false, 'return false when row is already selected');
+  equals(inst.select('<div></div>'), null, 'return null when no row is found');
+   
   inst.select(row2);
   
-  equals(true,  row2.is(selected_class), 'select another row');
-  equals(false, row1.is(selected_class), 'deselects other selected rows');
+  equals(row2.is(selected_class), true,  'select another row');
+  equals(row1.is(selected_class), false, 'deselects other selected rows');
   
   inst.options.beforeDeselect = function() {
     return false;
   };
   
-  equals(false, inst.select(row1), 'returns false if deslecting returns false');
+  equals(inst.select(row1), false, 'returns false if deselecting returns false');
   
   delete inst.options.beforeDeselect;
   
@@ -295,7 +295,21 @@ test('select', function(){
     return false;
   };
   
-  equals(false, inst.select(row1), 'returns false if beforeSelect returns false');
+  equals(inst.select(row1), false, 'returns false if beforeSelect returns false');
+  
+  delete inst.options.beforeSelect;
+  
+  var event_passed;
+  inst.options.beforeDeselect = function(row, event) {
+    event_passed = event;
+    return true;
+  };
+  
+  inst.select(row1);
+  row2.click();
+  
+  ok(event_passed, 'passes event when automatically deselecting current row');
+  
 });
 
 test('deselect', function(){

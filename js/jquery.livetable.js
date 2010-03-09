@@ -304,7 +304,7 @@
         var already_selected = row.is('.' + this.options.selectedClass);
         
         if (! already_selected) {
-          if (not_skipped = this.deselect() !== false) {
+          if (not_skipped = this.deselect(null, event) !== false) {
             not_skipped = this._trigger('beforeSelect', row, event) !== false;
           }
         }
