@@ -491,7 +491,10 @@
   // Number
 
   $.livetable.addType('number', function(data, td, input) {
-    input.val(parseFloat(td.text(), 10));
+    var text = td.text();
+    // Remove comma
+    text.replace('([0-9]),([0-9])', '$1$2');
+    input.val(parseFloat(text, 10));
     
     // Limit to numeric characters, plus . and -
     input.keypress(function(e){
