@@ -183,7 +183,7 @@ test('transformRow', function(){
   
   var to_field = $.livetable.types.text.to_field;
   var data     = $.livetable.columnData(tds.eq(2));
-  var expected = to_field(data, tds.eq(2));
+  var expected = to_field(data.name, tds.eq(2));
   expected = $('<td></td>').append(expected).html();
   
   same(tds.eq(0).html(), field_tds.eq(0).html(), '<td> with no type should be ignored');
@@ -514,16 +514,15 @@ module('Types');
 test('text', function(){
   var type = 'text';
   var name = 'diogenes';
-  var data = {name: name};
   var td   = $('<td></td>').text(name);
-  var input = $.livetable.types[type].to_field(data, td);
+  var input = $.livetable.types[type].to_field(name, td);
   
   equal(input.get(0).nodeName.toLowerCase(), 'input', 'return an input field');
   equal(input.attr('name'), name, 'sets correct name');
   equal(input.attr('id'), name, 'sets correct id');
   equal(input.val(), name, 'sets correct value');
   
-  var text = $.livetable.types[type].to_text(data, td.empty().append(input));
+  var text = $.livetable.types[type].to_text(input, td.empty().append(input));
   
   equal(text, name, 'to_text() should return value of input field');
 });
@@ -531,9 +530,8 @@ test('text', function(){
 test('textarea', function(){
   var type = 'textarea';
   var name = 'rachmaninoff';
-  var data = {name: name};
   var td   = $('<td></td>').text(name);
-  var input = $.livetable.types[type].to_field(data, td);
+  var input = $.livetable.types[type].to_field(name, td);
   
   equal(input.get(0).nodeName.toLowerCase(), 'textarea', 'return a textarea');
   equal(input.attr('name'), name, 'sets correct name');
@@ -541,7 +539,7 @@ test('textarea', function(){
   equal(input.val(), name, 'sets correct value');
   equal(input.text(), name, 'sets correct text');
   
-  var text = $.livetable.types[type].to_text(data, td.empty().append(input));
+  var text = $.livetable.types[type].to_text(input, td.empty().append(input));
   equal(text, name, 'to_text() should return value of textarea');
 });
 
@@ -549,16 +547,15 @@ test('number', function(){
   var type = 'number';
   var name = 'babbage';
   var val  = -17.91;
-  var data = {name: name};
   var td   = $('<td></td>').text(val + name);
-  var default_input = $.livetable.default_options_to_field(data, td);
-  var input = $.livetable.types[type].to_field(data, td, default_input);
+  var default_input = $.livetable.default_options_to_field(name, td);
+  var input = $.livetable.types[type].to_field(name, td, default_input);
 
   equal(input.get(0).nodeName.toLowerCase(), 'input', 'return an input field');
   equal(input.attr('name'), name, 'sets correct name');
   equal(input.attr('id'), name, 'sets correct id');
   equal(input.val(), val, 'sets correct value');
   
-  var text = $.livetable.types[type].to_text(data, td.empty().append(input));
+  var text = $.livetable.types[type].to_text(input, td.empty().append(input));
   equal(text, val, 'to_text() should return value of input field');
 });

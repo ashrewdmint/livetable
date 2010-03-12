@@ -39,18 +39,18 @@
     },
     
     // Default to_field conversion
-    default_options_to_field: function(data, td, input) {
+    default_options_to_field: function(name, td, input) {
       return $('<input />').attr({
         type: 'text',
-        name:  data.name,
-        id:    data.name,
+        name:  name,
+        id:    name,
         value: td.text()
       });
     },
     
     // Default to_text conversion
-    default_options_to_text: function(data, td, old_content) {
-      return td.find(':input').val();
+    default_options_to_text: function(input, old_content) {
+      return input.val();
     },
     
     // Adds a new type.
@@ -207,12 +207,12 @@
         
         if (form == 'fields') {
           td.data('oldhtml', td.html());
-          input  = self.default_options_to_field(data, td);
-          result = type.to_field(data, td, input);
+          input  = self.default_options_to_field(data.name, td);
+          result = type.to_field(data.name, td, input);
         }
         
         if (form == 'text') {
-          result = type.to_text(data, td, td.data('oldhtml'));
+          result = type.to_text(td.find(':input'), td, td.data('oldhtml'));
         }
         
         td.html(result);
@@ -480,17 +480,17 @@
 
   // Textarea
 
-  $.livetable.addType('textarea', function(data, td) {
+  $.livetable.addType('textarea', function(name, td) {
     return $('<textarea></textarea>').attr({
       type: 'text',
-      name:  data.name,
-      id:    data.name
+      name:  name,
+      id:    name
     }).text(td.text());
   });
 
   // Number
 
-  $.livetable.addType('number', function(data, td, input) {
+  $.livetable.addType('number', function(name, td, input) {
     var text = td.text();
     // Remove comma
     text.replace('([0-9]),([0-9])', '$1$2');
