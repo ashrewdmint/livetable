@@ -62,7 +62,7 @@
         to_field = typeof(to_field) == 'function' ? to_field : this.defaultOptionsToField;
         to_text  = typeof(to_text)  == 'function' ? to_text  : this.defaultOptionsToText;
         
-        this.types[name] = {to_field: to_field, to_text: to_text};
+        this.types[name] = {toField: to_field, toText: to_text};
         return true;
       }
       return false;
@@ -208,11 +208,11 @@
         if (form == 'fields') {
           td.data('oldhtml', td.html());
           input  = self.defaultOptionsToField(data.name, td);
-          result = type.to_field(data.name, td, input);
+          result = type.toField(data.name, td, input);
         }
         
         if (form == 'text') {
-          result = type.to_text(td.find(':input'), td, td.data('oldhtml'));
+          result = type.toText(td.find(':input'), td, td.data('oldhtml'));
         }
         
         td.html(result);
