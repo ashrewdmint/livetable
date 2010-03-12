@@ -38,13 +38,13 @@ test('addType', function(){
   var func1 = function() { return 1; };
   var func2 = function() { return 2; };
   
-  equals(false, $.livetable.addType(), 'return false if name is not a string');
-  equals(true,  $.livetable.addType('test'), 'return true if name is a string');
-  equals(true,  $.livetable.addType('test2', func1, func2), 'return true if a valid name and two functions are passed');
+  equals($.livetable.addType(), false, 'return false if name is not a string');
+  equals($.livetable.addType('test'), true, 'return true if name is a string');
+  equals($.livetable.addType('test2', func1, func2), true, 'return true if a valid name and two functions are passed');
   
   var saved1    = $.livetable.types['test'];
   var saved2    = $.livetable.types['test2'];
-  var expected1 = {to_field: $.livetable.default_options_to_field, to_text: $.livetable.default_options_to_text};
+  var expected1 = {to_field: $.livetable.defaultOptionsToField, to_text: $.livetable.defaultOptionsToText};
   var expected2 = {to_field: func1, to_text: func2};    
   
   ok(saved1, 'add first type to types object');
@@ -548,7 +548,7 @@ test('number', function(){
   var name = 'babbage';
   var val  = -17.91;
   var td   = $('<td></td>').text(val + name);
-  var default_input = $.livetable.default_options_to_field(name, td);
+  var default_input = $.livetable.defaultOptionsToField(name, td);
   var input = $.livetable.types[type].to_field(name, td, default_input);
 
   equal(input.get(0).nodeName.toLowerCase(), 'input', 'return an input field');

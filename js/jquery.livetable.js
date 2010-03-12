@@ -34,12 +34,12 @@
     return_methods:   ['isDisabled', 'serialize', 'hasChanges', 'changes', 'last'],
     events:           ['onSelect', 'beforeSelect', 'onDeselect', 'beforeDeselect', 'onSerialize', 'beforeDiscardChanges'],
     
-    is_remember_loaded:  function() {
+    isRememberLoaded:  function() {
       return typeof($.fn.remember) == 'function';
     },
     
     // Default to_field conversion
-    default_options_to_field: function(name, td, input) {
+    defaultOptionsToField: function(name, td, input) {
       return $('<input />').attr({
         type: 'text',
         name:  name,
@@ -49,7 +49,7 @@
     },
     
     // Default to_text conversion
-    default_options_to_text: function(input, old_content) {
+    defaultOptionsToText: function(input, old_content) {
       return input.val();
     },
     
@@ -59,8 +59,8 @@
   
     addType: function(name, to_field, to_text) {
       if (typeof(name) == 'string') {
-        to_field = typeof(to_field) == 'function' ? to_field : this.default_options_to_field;
-        to_text  = typeof(to_text)  == 'function' ? to_text  : this.default_options_to_text;
+        to_field = typeof(to_field) == 'function' ? to_field : this.defaultOptionsToField;
+        to_text  = typeof(to_text)  == 'function' ? to_text  : this.defaultOptionsToText;
         
         this.types[name] = {to_field: to_field, to_text: to_text};
         return true;
@@ -207,7 +207,7 @@
         
         if (form == 'fields') {
           td.data('oldhtml', td.html());
-          input  = self.default_options_to_field(data.name, td);
+          input  = self.defaultOptionsToField(data.name, td);
           result = type.to_field(data.name, td, input);
         }
         
@@ -456,7 +456,7 @@
     },
     
     _remember: function(method, arg) {
-      if ($.livetable.is_remember_loaded()) {
+      if ($.livetable.isRememberLoaded()) {
         var row = this._currentRow();
         if (row) {
           return row.remember(method, arg);
@@ -492,7 +492,8 @@
 
   $.livetable.addType('number', function(name, td, input) {
     var text = td.text();
-    // Remove comma
+    
+    // Remove commas
     text.replace('([0-9]),([0-9])', '$1$2');
     input.val(parseFloat(text, 10));
     
