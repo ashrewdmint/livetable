@@ -252,6 +252,63 @@
         return table.data(this.name);
       }
       return false;
+    },
+    
+    // Formats a number. Rounds to desired number of decimals,
+    // separates with a comma by default. Decimal character is
+    // "." by default, but can be customized.
+    
+    formatNumber: function(number, decimal_places, separator, decimal_char) {
+      
+      if (isNaN(number) || typeof(number) != 'number') {
+        return false;
+      }
+      
+      if (typeof(separator) != 'string')
+        separator = ',';
+      
+      if (typeof(decimal_char) != 'string')
+        decimal_char = '.';
+      
+      if (typeof(decimal_places) != 'number' || isNaN(decimal_places))
+        decimal_places = 0;
+      
+      // Round to decimal places
+      if (decimal_places) {
+        var multiplier = Math.pow(10, decimal_places);
+        number = Math.round(number * multiplier) / multiplier;
+      }
+      
+      number = number.toString();
+      var decimals = number.split('.');
+      number = decimals[0];
+      
+      // Set decimals
+      decimals = decimals[1] ? decimals[1] : '';
+      
+      while (decimals.length < decimal_places) {
+        decimals += '0';
+      }
+      
+      if (decimals)
+        decimals = decimal_char + decimals;
+      
+      // Add separator to number
+      
+      if (separator) {
+        reversed = number.split('').reverse();
+        number = [];
+        $.each(reversed, function(i, n){
+          if (i % 3 == 0 && i > 0 && i != reversed.length - 1) {
+            n += separator;
+          }
+          number.push(n);
+        });
+        
+        number = number.reverse().join('');
+      }
+      
+      return number + decimals;
     }
   };
   
