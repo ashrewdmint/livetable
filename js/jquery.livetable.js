@@ -332,8 +332,54 @@
     
     // Takes a string and returns a number.
     
-    parseNumber: function(string, separator, decimal_char) {
+    parseNumber: function(string, separator, decimal_char, negative) {
+      if (typeof(string) != 'string')
+        return false;
       
+      if (typeof(separator) != 'string')
+        separator = ',';
+      
+      if (typeof(decimal_char) != 'string')
+        decimal_char = '.';
+      
+      if (typeof(negative) != 'string')
+        negative = '-n';
+      
+      // Escape
+      
+      separator    = this.regexEscape(separator);
+      decimal_char = this.regexEscape(decimal_char);
+      negative     = this.regexEscape(negative);
+      
+      // Remove negative formatting
+      
+      nchars = negative.split('n');
+      nchars[0] = '^' + nchars[0];
+      nchars[1] += '$';
+      
+      if (string.match(nchars[0]) && string.match(nchars[1])) {
+        string = string
+            .replace(new RegExp(nchars[0]), '-')
+            .replace(new RegExp(nchars[1]), '');
+        
+        if (string.split('')[0] != '-')
+          string = '-' + string;
+      }
+      
+      // Replace separator and decimal_char
+      
+      string = string
+        .replace(new RegExp(separator, 'g'), '')
+        .replace(new RegExp(decimal_char), '.');
+      
+      return parseFloat(string);
+    },
+    
+    // Escapes regex special characters
+    // From: http://snipplr.com/view/9649/escape-regular-expression-characters-in-string/
+    regexEscape: function(string) {
+      var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
+      return string.replace(specials, "\\$&");
     }
   };
   

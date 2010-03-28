@@ -224,6 +224,14 @@ test('formatNumber', function(){
   equal($.livetable.formatNumber(-1234.56, 2, ',', '.', 'n-'), '1,234.56-');
 });
 
+test('parseNumber', function(){
+  equal($.livetable.parseNumber(), false, 'return false when no arguments supplied');
+  equal($.livetable.parseNumber('1,234.56'), 1234.56);
+  equal($.livetable.parseNumber('1 234,56', ' ', ','), 1234.56);
+  equal($.livetable.parseNumber('(1 234,56)', ' ', ',', '(n)'), -1234.56);
+  equal($.livetable.parseNumber('1,234.56-', ',', '.', 'n-'), -1234.56);
+});
+
 module('Instance');
 
 test('instantiate', function(){
