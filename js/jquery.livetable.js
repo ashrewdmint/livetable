@@ -254,11 +254,15 @@
       return false;
     },
     
-    // Formats a number. Rounds to desired number of decimals,
-    // separates with a comma by default. Decimal character is
-    // "." by default, but can be customized.
+    // Formats a number. Rounds to desired number of decimals.
+    // Thousands separator, decimal character, and negative
+    // number formatting are all customizeable.
+    // To customize negative number formatting, pass a string
+    // to the "negative" argument, using "n" as a placeholder
+    // for the negative number. Default value is "-n", but
+    // you may prefer to use "(n)" or "n-".
     
-    formatNumber: function(number, decimal_places, separator, decimal_char) {
+    formatNumber: function(number, places, separator, decimal_char, negative) {
       
       if (isNaN(number) || typeof(number) != 'number') {
         return false;
@@ -270,23 +274,27 @@
       if (typeof(decimal_char) != 'string')
         decimal_char = '.';
       
-      if (typeof(decimal_places) != 'number' || isNaN(decimal_places))
-        decimal_places = 0;
+      if (typeof(negative) != 'string')
+        negative = '-n';
+      
+      if (typeof(places) != 'number' || isNaN(places))
+        places = 0;
       
       // Round to decimal places
-      if (decimal_places) {
-        var multiplier = Math.pow(10, decimal_places);
+      if (places) {
+        var multiplier = Math.pow(10, places);
         number = Math.round(number * multiplier) / multiplier;
       }
       
       number = number.toString();
       var decimals = number.split('.');
+      var original_number = number;
       number = decimals[0];
       
       // Set decimals
       decimals = decimals[1] ? decimals[1] : '';
       
-      while (decimals.length < decimal_places) {
+      while (decimals.length < places) {
         decimals += '0';
       }
       
@@ -308,7 +316,24 @@
         number = number.reverse().join('');
       }
       
-      return number + decimals;
+      // Add decimals
+      
+      number += decimals;
+      
+      // Format negative number
+      
+      if (Math.abs(original_number) != original_number) {
+        number = number.replace(/^-/, '');
+        number = negative.replace(/n/, number);
+      }
+      
+      return number;
+    },
+    
+    // Takes a string and returns a number.
+    
+    parseNumber: function(string, separator, decimal_char) {
+      
     }
   };
   
