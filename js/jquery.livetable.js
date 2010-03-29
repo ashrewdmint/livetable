@@ -265,7 +265,11 @@
     formatNumber: function(number, places, separator, decimal_char, negative) {
       
       if (isNaN(number) || typeof(number) != 'number') {
-        return false;
+        
+        number = parseFloat(number);
+        
+        if (isNaN(number))
+          return false;
       }
       
       if (typeof(separator) != 'string')
@@ -278,7 +282,7 @@
         negative = '-n';
       
       if (typeof(places) != 'number' || isNaN(places))
-        places = 0;
+        places = parseFloat(places) || 0;
       
       // Round to decimal places
       if (places) {
@@ -617,13 +621,21 @@
   });
 
   // Number
+  // Custom arguments
+  //   - places
+  //   - decimal-char
+  //   - separator
+  //   - negative
 
   $.livetable.addType('number', function(name, td, input) {
     var text = td.text();
     
-    // Remove commas
-    text.replace('([0-9]),([0-9])', '$1$2');
-    input.val(parseFloat(text, 10));
+    var separator    = $.livetable.data(td, 'separator');
+    var negative     = $.livetable.data(td, 'negative');
+    var decimal_char = $.livetable.data(td, 'decimal-char');
+    
+    var number = $.livetable.parseNumber(text, separator, decimal_char, negative);
+    input.val(number);
     
     // Limit to numeric characters, plus . and -
     input.keypress(function(e){
@@ -634,6 +646,15 @@
     });
     
     return input;
+  }, function(input, old_content) {
+    var td = input.parents('td').eq(0);
+    
+    var separator    = $.livetable.data(td, 'separator');
+    var negative     = $.livetable.data(td, 'negative');
+    var decimal_char = $.livetable.data(td, 'decimal-char');
+    var places       = $.livetable.data(td, 'places');
+    
+    return $.livetable.formatNumber(input.val(), places, separator, decimal_char, negative);
   });
   
   // Plugin

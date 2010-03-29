@@ -212,8 +212,9 @@ test('get', function(){
 test('formatNumber', function(){
   equal($.livetable.formatNumber(), false, 'return false when no arguments supplied');
   equal($.livetable.formatNumber('hellothere'), false, 'return false when no number supplied');
+  equal($.livetable.formatNumber('123.45'), 123.45, 'use parseFloat() when possible');
   equal($.livetable.formatNumber(12345.6789, 2), '12,345.68');
-  equal($.livetable.formatNumber(12345.6, 2), '12,345.60');
+  equal($.livetable.formatNumber(12345.6, '2'), '12,345.60');
   equal($.livetable.formatNumber(12345, 2, ''), '12345.00');
   equal($.livetable.formatNumber(12345, 4, ' '), '12 345.0000');
   equal($.livetable.formatNumber(112345678901, 'ignoreme'), '112,345,678,901');
@@ -545,7 +546,7 @@ test('text', function(){
   equal(input.attr('id'), name, 'sets correct id');
   equal(input.val(), name, 'sets correct value');
   
-  var text = $.livetable.types[type].toText(input, td.empty().append(input));
+  var text = $.livetable.types[type].toText(input);
   
   equal(text, name, 'toText() should return value of input field');
 });
@@ -562,23 +563,34 @@ test('textarea', function(){
   equal(input.val(), name, 'sets correct value');
   equal(input.text(), name, 'sets correct text');
   
-  var text = $.livetable.types[type].toText(input, td.empty().append(input));
+  var text = $.livetable.types[type].toText(input);
   equal(text, name, 'toText() should return value of textarea');
 });
 
 test('number', function(){
   var type = 'number';
   var name = 'babbage';
-  var val  = -17.91;
-  var td   = $('<td></td>').text(val + name);
+  var val  = '(1 000,31)';
+  var td   = $('<td></td>').text(val).attr({
+    'data-separator': ' ',
+    'data-places': 2,
+    'data-negative': '(n)',
+    'data-decimal-char': ','
+  });
+  
   var default_input = $.livetable.defaultOptionsToField(name, td);
   var input = $.livetable.types[type].toField(name, td, default_input);
 
   equal(input.get(0).nodeName.toLowerCase(), 'input', 'return an input field');
   equal(input.attr('name'), name, 'sets correct name');
   equal(input.attr('id'), name, 'sets correct id');
-  equal(input.val(), val, 'sets correct value');
+  equal(input.val(), '-1000.31', 'sets correct value');
   
-  var text = $.livetable.types[type].toText(input, td.empty().append(input));
-  equal(text, val, 'toText() should return value of input field');
+  td.append(input);
+  input.val(input.val() + '123'); // Add decimals to check places limiting
+  
+  var text = $.livetable.types[type].toText(input);
+  equal(text, val, 'toText() should return formatted number value of input field');
+  
+  
 });
