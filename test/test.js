@@ -88,6 +88,12 @@ test('data', function(){
   equals($.livetable.data(el_attr, 'squirrel'), 'newvalue', 'should set attr data');
 });
 
+test('collect', function(){
+  var td = $('<td data-foo="bar" class="baz-qux some-other-class nodasheshere">');
+  var result = {foo: 'bar', baz: 'qux', some: 'other-class'};
+  same($.livetable.collect(td), result);
+});
+
 test('column', function(){
   var table = $('               \
     <table>                     \

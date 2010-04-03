@@ -83,6 +83,50 @@
       return typeof(this.types[name]) != 'undefined';
     },
     
+    
+    // Finds all attr and class data in an element
+    
+    collect: function(el) {
+      var data = {};
+      
+      // Clone element, wrap it in a div, and find the html
+      var html = el.clone().wrap('<div></div>').parent().html();
+      
+      // Grab the contents of the first tag to iterate through the attrs
+      var attrs = html.replace(/[^ ]+([^>]+).*/, '$1').split(' ');
+      
+      // Loop through attrs
+      $.each(attrs, function(index, pair){
+        if (! pair)
+          return;
+        
+        pair = pair.split('=');
+        
+        if (pair.length != 2)
+          return;
+        
+        var value = pair[1].replace(/^["']|["']$/g, ''); // Remove quotes
+        var key   = pair[0];
+        
+        if (key.indexOf('data-') >= 0) {
+          data[key.substr(5)] = value; // substr removes "data-" text from key name
+        }
+      });
+      
+      // Loop through classes
+      $.each(el.attr('class').split(' '), function(index2, pair){
+        if (! pair) return;
+        
+        pair = pair.split('-');
+        
+        if (pair.length < 2)
+          return;
+        
+        data[pair.shift()] = pair.join('-');
+      });
+      return data;
+    },
+    
     // Looks for data set on an element in data attributes or classes.
     // Returns data value, or null if nothing was found.
     // Sets data if value argument is supplied.
