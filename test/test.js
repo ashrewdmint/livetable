@@ -127,12 +127,12 @@ test('columnData', function(){
     <table>                                   \
       <thead>                                 \
         <tr>                                  \
-          <th class="type-foo name-baz"></th> \
+          <th class="type-foo name-baz other-hello"></th> \
         </tr>                                 \
       </thead>                                \
       <tbody>                                 \
         <tr>                                  \
-          <td class="type-bar name-biz"></td> \
+          <td class="type-bar name-biz other-goodbye"></td> \
         </tr>                                 \
         <tr>                                  \
           <td></td>                           \
@@ -141,34 +141,24 @@ test('columnData', function(){
     </table>\
   ');
   
-  var td       = table.find('td:last');
-  var expected = {column: 0, type: 'foo', name: 'baz'};
+  var td   = table.find('td:last');
+  var td2  = table.find('tbody tr:first td');
+  var expected = {column: 0, type: 'foo', name: 'baz', other: 'hello'};
   
-  same(expected, $.livetable.columnData(td), 'finds type, name, and column index from first <th> in the column');
+  same(expected, $.livetable.columnData(td), 'finds type, name, column index, and other from first <th> in the column');
   
   table.find('thead').remove();
   expected.type = 'bar';
   expected.name = 'biz';
+  expected.other = 'goodbye';
   
-  same(expected, $.livetable.columnData(td), 'finds type, name, and column index from first <td> in the column');
+  same(expected, $.livetable.columnData(td), 'finds type, name, column index, and other from first <td> in the column');
+  same(expected, $.livetable.columnData(td2), 'correct data is found even when a <td> from the first row is passed');
   
-  td.addClass('type-qux name-tux');
-  expected.type = 'qux';
-  expected.name = 'tux';
-  
-  same(expected, $.livetable.columnData(td), 'finds type, name, and column index from passed <td> if it has them');
-  
-  td.removeClass('name-tux');
-  table.find('td:first').attr('class', '');
-  expected.name = 'qux-0';
+  table.find('td:first').removeClass('name-biz');
+  expected.name = 'bar0';
   
   same(expected, $.livetable.columnData(td), 'if name is not found, combine the type with the column index');
-  
-  table.find('td').attr('class', '');
-  expected.name = null;
-  expected.type = null;
-  
-  same(expected, $.livetable.columnData(td), 'if no name or type is found, those properties should be null');
 });
 
 test('transformRow', function(){

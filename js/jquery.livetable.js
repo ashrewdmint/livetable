@@ -174,10 +174,9 @@
       return result;
     },
     
-    // Uses data() to find a <td>'s name and type. Attempts to find missing
-    // data by traversing up the associated column and looking in the first
-    // <th> or the first <td>. If no name is found, a name will be created
-    // using the type and the column, separated by a dash ("text-2").
+    // Uses collect() to gather column data for a <td>. If no name is
+    // found, a name will be created by combining the type and the
+    // column number together ("text2").
     
     columnData: function(td) {
       var self = this, data = {}, value, column, tdh;
@@ -185,35 +184,16 @@
       td = $(td);
       column = this.column(td);
       
-      $.each(['type', 'name'], function(index, key) {
-        
-        // Look in <td>
-        value = self.data(td, key);
-        
-        // Traverse up column and look in <td> or <th>
-        if (! value) {
-          tdh = td.parents('table:first')
-            .find('tr:first')
-            .children()
-            .eq(column);
-          
-          value = self.data(tdh, key);
-        }
-        
-        data[key] = value;
-      });
-
+      // Find the first <th> or <td> in the correct column;
+      var target = td.parents('table:first').find('tr:first').children().eq(column);
+      var data = this.collect(target);
+      
       // Set column
       data.column = self.column(td);
       
       // Default name
       if (! data.name && data.type) {
-        data.name = data.type + '-' + data.column;
-      }
-      
-      if (! data.name && ! data.type) {
-        data.name = null;
-        data.type = null;
+        data.name = data.type + data.column;
       }
       
       return data;
