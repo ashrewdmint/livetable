@@ -70,24 +70,6 @@ test('hasType', function(){
   equals(false, $.livetable.hasType('wondermark'), 'return false when type does not exist');
 });
 
-test('data', function(){
-  var el = $('<div></div>');
-  var el_class = el.clone().addClass('moose-bullwinkle');
-  var el_attr  = el.clone().attr('data-squirrel', 'rocky');
-  
-  equals($.livetable.data(el_class, 'moose'), 'bullwinkle', 'should find data in classes');
-  equals($.livetable.data(el_attr, 'squirrel'), 'rocky', 'should find data in HTML5 data attributes');
-  equals($.livetable.data(el, 'foo'), null, 'should return null if no data found');
-  equals($.livetable.data(el), false, 'should return false if no name argument was passed');
-  equals($.livetable.data(), false, 'should return false if no element argument was passed');
-  
-  $.livetable.data(el_class, 'moose', 'newvalue');
-  $.livetable.data(el_attr, 'squirrel', 'newvalue');
-  
-  equals($.livetable.data(el_class, 'moose'), 'newvalue', 'should set class data');
-  equals($.livetable.data(el_attr, 'squirrel'), 'newvalue', 'should set attr data');
-});
-
 test('collect', function(){
   var td = $('<td data-foo="bar" class="baz-qux some-other-class nodasheshere">');
   var result = {foo: 'bar', baz: 'qux', some: 'other-class'};

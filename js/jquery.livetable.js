@@ -132,53 +132,6 @@
       return data;
     },
     
-    // Looks for data set on an element in data attributes or classes.
-    // Returns data value, or null if nothing was found.
-    // Sets data if value argument is supplied.
-    
-    data: function(el, name, value) {
-      if (! el || ! name) {
-        return false;
-      }
-      
-      var attr_value, regex, match, result, set_value;
-      el = $(el);
-      set_value = typeof(value) != 'undefined';
-      
-      // Look in classes
-      if (el.attr('class')) {
-        regex = new RegExp(name + '-([^ ]+)');
-        match = el.attr('class').match(regex);
-        
-        if (match && typeof(match[1]) == 'string') {
-          result = match[1];
-          
-          // Set data
-          if (set_value) {
-            el.removeClass(match[0]);
-            el.addClass(name + '-' + value);
-            result = value;
-          }
-        }
-      }
-      
-      // Look in attributes
-      if (! result) {
-        attr_value = el.attr('data-' + name);
-        if (typeof(attr_value) == 'string' && attr_value !== '') {
-          result = attr_value;
-          
-          // Set value
-          if (set_value) {
-            el.attr('data-' + name, value);
-            result = value;
-          }
-        }
-      }
-      
-      return result;
-    },
-    
     // Uses collect() to gather column data for a <td>. If no name is
     // found, a name will be created by combining the type and the
     // column number together ("text2").
