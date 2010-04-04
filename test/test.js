@@ -145,20 +145,21 @@ test('columnData', function(){
   var td2  = table.find('tbody tr:first td');
   var expected = {column: 0, type: 'foo', name: 'baz', other: 'hello'};
   
-  same(expected, $.livetable.columnData(td), 'finds type, name, column index, and other from first <th> in the column');
+  same($.livetable.columnData(td), expected, 'finds type, name, column index, and other from first <th> in the column');
   
   table.find('thead').remove();
   expected.type = 'bar';
   expected.name = 'biz';
   expected.other = 'goodbye';
   
-  same(expected, $.livetable.columnData(td), 'finds type, name, column index, and other from first <td> in the column');
-  same(expected, $.livetable.columnData(td2), 'correct data is found even when a <td> from the first row is passed');
+  same($.livetable.columnData(td),  expected, 'finds type, name, column index, and other from first <td> in the column');
+  same($.livetable.columnData(td2), expected,  'correct data is found even when a <td> from the first row is passed');
+  same($.livetable.columnData(td2.clone()), expected, 'correct data is found even when there is no target');
   
   table.find('td:first').removeClass('name-biz');
   expected.name = 'bar0';
   
-  same(expected, $.livetable.columnData(td), 'if name is not found, combine the type with the column index');
+  same($.livetable.columnData(td), expected, 'if name is not found, combine the type with the column index');
 });
 
 test('transformRow', function(){
@@ -170,6 +171,7 @@ test('transformRow', function(){
     </tr>\
   ');
   
+  
   var tds = row.find('td');
   var field_row = $.livetable.transformRow(row.clone(), 'fields');
   var field_tds = field_row.find('td');
@@ -177,15 +179,15 @@ test('transformRow', function(){
   var text_row  = $.livetable.transformRow(field_row.clone(), 'text');
   var text_tds  = text_row.find('td');
   
-  var toField = $.livetable.types.text.toField;
+  var toField  = $.livetable.types.text.toField;
   var data     = $.livetable.columnData(tds.eq(2));
   var expected = toField(data.name, tds.eq(2));
-  expected = $('<td></td>').append(expected).html();
+  expected     = $('<td></td>').append(expected).html();
   
-  same(tds.eq(0).html(), field_tds.eq(0).html(), '<td> with no type should be ignored');
-  same(tds.eq(1).html(), field_tds.eq(1).html(), '<td> with invalid type should be ignored');
-  same(expected,         field_tds.eq(2).html(), 'transform a row to fields');
-  same(tds.eq(2).html(), text_tds.eq(2).html(),  'transform a row to text');
+  same(field_tds.eq(0).html(), tds.eq(0).html(), '<td> with no type should be ignored');
+  same(field_tds.eq(1).html(), tds.eq(1).html(), '<td> with invalid type should be ignored');
+  same(field_tds.eq(2).html(), expected,         'transform a row to fields');
+  same(text_tds.eq(2).html(), tds.eq(2).html(),  'transform a row to text');
 });
 
 test('create', function(){

@@ -87,6 +87,11 @@
     // Finds all attr and class data in an element
     
     collect: function(el) {
+      el = $(el);
+      
+      if (! el.length)
+        return false;
+      
       var data = {};
       
       // Clone element, wrap it in a div, and find the html
@@ -179,17 +184,19 @@
     // column number together ("text2").
     
     columnData: function(td) {
-      var self = this, data = {}, value, column, tdh;
-      
       td = $(td);
-      column = this.column(td);
+      var column = this.column(td);
       
       // Find the first <th> or <td> in the correct column;
       var target = td.parents('table:first').find('tr:first').children().eq(column);
+      
+      // Target not found? Use the <td> instead
+      target = target.length ? target : td;
+      
       var data = this.collect(target);
       
       // Set column
-      data.column = self.column(td);
+      data.column = this.column(td);
       
       // Default name
       if (! data.name && data.type) {
