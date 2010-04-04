@@ -613,7 +613,7 @@
   $.livetable.addType('number', function(data, input, td) {
     var text = td.text();
     
-    var number = $.livetable.parseNumber(text, data.places, data.separator, data.decimal, data.negative);
+    var number = $.livetable.parseNumber(text, data.separator, data.decimal, data.negative);
     input.val(number);
     
     // Limit to numeric characters, plus . and -

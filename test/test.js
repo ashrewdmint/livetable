@@ -550,27 +550,28 @@ test('textarea', function(){
 });
 
 test('number', function(){
-  // var type = 'number';
-  // var name = 'babbage';
-  // var val  = '(1 000,31)';
-  // var td   = $('<td></td>').text(val).attr({
-  //   'data-separator': ' ',
-  //   'data-places': 2,
-  //   'data-negative': '(n)',
-  //   'data-decimal-char': ','
-  // });
-  // 
-  // var default_input = $.livetable.defaultOptionsToField(name, td);
-  // var input = $.livetable.types[type].toField(name, td, default_input);
-  // 
-  // equal(input.get(0).nodeName.toLowerCase(), 'input', 'return an input field');
-  // equal(input.attr('name'), name, 'sets correct name');
-  // equal(input.attr('id'), name, 'sets correct id');
-  // equal(input.val(), '-1000.31', 'sets correct value');
-  // 
-  // td.append(input);
-  // input.val(input.val() + '123'); // Add decimals to check places limiting
-  // 
-  // var text = $.livetable.types[type].toText(input);
-  // equal(text, val, 'toText() should return formatted number value of input field');
+  var type = 'number';
+  var name = 'babbage';
+  var val  = '(1 000,31)';
+  var td   = $('<td></td>').text(val);
+  var data = {
+    name: name,
+    places: 2,
+    separator: ' ',
+    decimal: ',',
+    negative: '(n)'
+  };
+  
+  var default_input = $.livetable.defaultOptionsToField(data, null, td);
+  var input = $.livetable.types[type].toField(data, default_input, td);
+  
+  equal(input.get(0).nodeName.toLowerCase(), 'input', 'return an input field');
+  equal(input.attr('name'), name, 'sets correct name');
+  equal(input.attr('id'), name, 'sets correct id');
+  equal(input.val(), '-1000.31', 'sets correct value');
+  
+  td.append(input);
+  input.val(input.val() + '123'); // Add decimals to check places limiting
+  var text = $.livetable.types[type].toText(data, input, td);
+  equal(text, val, 'toText() should return formatted number value of input field');
 });
