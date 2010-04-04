@@ -342,12 +342,11 @@
       
       nchars = negative.split('n');
       nchars[0] = '^' + nchars[0];
-      nchars[1] += '$';
+      nchars[1] += '.*$';
       
       if (string.match(nchars[0]) && string.match(nchars[1])) {
-        string = string
-            .replace(new RegExp(nchars[0]), '-')
-            .replace(new RegExp(nchars[1]), '');
+
+        string = string.replace(new RegExp(nchars[0]), '-');
         
         if (string.split('')[0] != '-')
           string = '-' + string;
