@@ -39,17 +39,17 @@
     },
     
     // Default to_field conversion
-    defaultOptionsToField: function(name, td, input) {
+    defaultOptionsToField: function(data, input, td) {
       return $('<input />').attr({
         type: 'text',
-        name:  name,
-        id:    name,
+        name:  data.name,
+        id:    data.name,
         value: td.text()
       });
     },
     
     // Default to_text conversion
-    defaultOptionsToText: function(input, old_content) {
+    defaultOptionsToText: function(data, input, td) {
       return input.val();
     },
     
@@ -190,13 +190,13 @@
         type = self.types[data.type];
         
         if (form == 'fields') {
-          td.data('oldhtml', td.html());
-          input  = self.defaultOptionsToField(data.name, td);
-          result = type.toField(data.name, td, input);
+          td.data('last', td.html());
+          input  = self.defaultOptionsToField(data, null, td);
+          result = type.toField(data, input, td);
         }
         
         if (form == 'text') {
-          result = type.toText(td.find(':input'), td, td.data('oldhtml'));
+          result = type.toText(data, td.find(':input'), td);
         }
         
         td.html(result);
@@ -596,11 +596,11 @@
 
   // Textarea
 
-  $.livetable.addType('textarea', function(name, td) {
+  $.livetable.addType('textarea', function(data, input, td) {
     return $('<textarea></textarea>').attr({
       type: 'text',
-      name:  name,
-      id:    name
+      name:  data.name,
+      id:    data.name
     }).text(td.text());
   });
 
@@ -611,14 +611,10 @@
   //   - separator
   //   - negative
 
-  $.livetable.addType('number', function(name, td, input) {
+  $.livetable.addType('number', function(data, input, td) {
     var text = td.text();
     
-    var separator    = $.livetable.data(td, 'separator');
-    var negative     = $.livetable.data(td, 'negative');
-    var decimal_char = $.livetable.data(td, 'decimal-char');
-    
-    var number = $.livetable.parseNumber(text, separator, decimal_char, negative);
+    var number = $.livetable.parseNumber(text, data.places, data.separator, data.decimal, data.negative);
     input.val(number);
     
     // Limit to numeric characters, plus . and -
@@ -630,15 +626,8 @@
     });
     
     return input;
-  }, function(input, old_content) {
-    var td = input.parents('td').eq(0);
-    
-    var separator    = $.livetable.data(td, 'separator');
-    var negative     = $.livetable.data(td, 'negative');
-    var decimal_char = $.livetable.data(td, 'decimal-char');
-    var places       = $.livetable.data(td, 'places');
-    
-    return $.livetable.formatNumber(input.val(), places, separator, decimal_char, negative);
+  }, function(data, input, td) {
+    return $.livetable.formatNumber(input.val(), data.places, data.separator, data.decimal, data.negative);
   });
   
   // Plugin
