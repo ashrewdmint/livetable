@@ -190,7 +190,6 @@
         type = self.types[data.type];
         
         if (form == 'fields') {
-          td.data('last', td.html());
           input  = self.defaultOptionsToField(data, null, td);
           result = type.toField(data, input, td);
         }
