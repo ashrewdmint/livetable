@@ -136,7 +136,7 @@
     // found, a name will be created by combining the type and the
     // column number together ("text2").
     
-    columnData: function(td) {
+    data: function(td) {
       td = $(td);
       var column = this.column(td);
       
@@ -181,7 +181,7 @@
       
       $(row).children('td').each(function() {
         td = $(this);
-        data = self.columnData(td);
+        data = self.data(td);
         
         if (! data.type || ! self.hasType(data.type)) {
           return;
