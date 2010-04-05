@@ -245,7 +245,7 @@
     // for the negative number. Default value is "-n", but
     // you may prefer to use "(n)" or "n-".
     
-    formatNumber: function(number, places, separator, decimal_char, negative) {
+    formatNumber: function(number, options) {
       
       if (isNaN(number) || typeof(number) != 'number') {
         
@@ -255,21 +255,23 @@
           return false;
       }
       
-      if (typeof(separator) != 'string')
-        separator = ',';
+      // Setup options
       
-      if (typeof(decimal_char) != 'string')
-        decimal_char = '.';
+      options = $.extend({
+        currency:  '',
+        places:    null,
+        separator: ',',
+        decimal:   '.',
+        negative:  '-%c%n',
+        positive:  '%c%n'
+      }, options);
       
-      if (typeof(negative) != 'string')
-        negative = '-n';
-      
-      if (typeof(places) != 'number' || isNaN(places))
-        places = parseFloat(places) || 0;
+      if (typeof(options.places) != 'number' || isNaN(options.places))
+        options.places = parseFloat(options.places) || null;
       
       // Round to decimal places
-      if (places) {
-        var multiplier = Math.pow(10, places);
+      if (options.places >= 0 && typeof(options.places) == 'number') {
+        var multiplier = Math.pow(10, options.places);
         number = Math.round(number * multiplier) / multiplier;
       }
       
@@ -281,21 +283,21 @@
       // Set decimals
       decimals = decimals[1] ? decimals[1] : '';
       
-      while (decimals.length < places) {
+      while (decimals.length < options.places) {
         decimals += '0';
       }
       
       if (decimals)
-        decimals = decimal_char + decimals;
+        decimals = options.decimal + decimals;
       
       // Add separator to number
       
-      if (separator) {
+      if (options.separator) {
         reversed = number.split('').reverse();
         number = [];
         $.each(reversed, function(i, n){
-          if (i % 3 == 0 && i > 0 && i != reversed.length - 1) {
-            n += separator;
+          if (i % 3 == 0 && i > 0 && n != '-') {
+            n += options.separator;
           }
           number.push(n);
         });
@@ -307,12 +309,19 @@
       
       number += decimals;
       
-      // Format negative number
+      // Format number
       
+      var template = options.positive;
+      
+      // For negative numbers
       if (Math.abs(original_number) != original_number) {
         number = number.replace(/^-/, '');
-        number = negative.replace(/n/, number);
+        template = options.negative;
       }
+      
+      number = template
+        .replace(/%n/, number)
+        .replace(/%c/, options.currency);
       
       return number;
     },
