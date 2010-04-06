@@ -570,7 +570,7 @@ test('number', function(){
     places: 2,
     separator: ' ',
     decimal: ',',
-    negative: '(n)'
+    negative: '(%n)'
   };
   
   var default_input = $.livetable.defaultOptionsToField(data, null, td);

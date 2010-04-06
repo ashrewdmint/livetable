@@ -630,14 +630,18 @@
   // Number
   // Custom arguments
   //   - places
-  //   - decimal-char
+  //   - decimal
   //   - separator
   //   - negative
+  //   - positive
+  //   - currency
+  //   - append
 
   $.livetable.addType('number', function(data, input, td) {
     var text = td.text();
     
-    var number = $.livetable.parseNumber(text, data.separator, data.decimal, data.negative);
+    var number = $.livetable.parseNumber(text, data.decimal, data.negative);
+    
     input.val(number);
     
     // Limit to numeric characters, plus . and -
@@ -650,7 +654,17 @@
     
     return input;
   }, function(data, input, td) {
-    return $.livetable.formatNumber(input.val(), data.places, data.separator, data.decimal, data.negative);
+    if (! data.append)
+      data.append = '';
+    
+    return $.livetable.formatNumber(input.val(), {
+      places:    data.places,
+      separator: data.separator,
+      decimal:   data.decimal,
+      negative:  data.negative,
+      positive:  data.positive,
+      currency:  data.currency
+    }) + data.append;
   });
   
   // Plugin
