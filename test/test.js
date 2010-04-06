@@ -213,12 +213,15 @@ test('formatNumber', function(){
 
 test('parseNumber', function(){
   equal($.livetable.parseNumber(), false, 'return false when no arguments supplied');
+  equal($.livetable.parseNumber('1,234.56'), 1234.56);
   equal($.livetable.parseNumber('1,234.56foo'), 1234.56);
-  equal($.livetable.parseNumber('1 234,56foo', ' ', ','), 1234.56);
-  equal($.livetable.parseNumber('(1 234,56)foo', ' ', ',', '(n)'), -1234.56);
-  equal($.livetable.parseNumber('1,234.56-foo', ',', '.', 'n-'), -1234.56);
-  equal($.livetable.parseNumber('1 234,56foo', ' ', ',', '(n)'), 1234.56);
-  equal($.livetable.parseNumber('1,234.56foo', ',', '.', 'n-'), 1234.56);
+  equal($.livetable.parseNumber('foo1,234.56foo'), 1234.56);
+  equal($.livetable.parseNumber('1 234,56', ','), 1234.56);
+  equal($.livetable.parseNumber('-1 234,56', ','), -1234.56);
+  equal($.livetable.parseNumber('(1 234,56)', ',', '(%n)'), -1234.56);
+  equal($.livetable.parseNumber('foo(1 234,56)', ',', '(%n)'), -1234.56);
+  equal($.livetable.parseNumber('1,234.56-', '.', '%n-'), -1234.56);
+  equal($.livetable.parseNumber('foo1,234.56-foo', '.', '%n-'), -1234.56);
 });
 
 module('Instance');

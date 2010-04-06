@@ -337,45 +337,51 @@
     },
     
     // Takes a string and returns a number.
+    // Please specify the decimal character you are using,
+    // and the negative number format you are using. by
+    // default this is "-%n" (use "%n" as a placeholder
+    // for the actual number).
     
-    parseNumber: function(string, separator, decimal_char, negative) {
+    parseNumber: function(string, decimal, negative) {
       if (typeof(string) != 'string')
         return false;
       
-      if (typeof(separator) != 'string')
-        separator = ',';
-      
-      if (typeof(decimal_char) != 'string')
-        decimal_char = '.';
+      if (typeof(decimal) != 'string')
+        decimal = '.';
       
       if (typeof(negative) != 'string')
-        negative = '-n';
+        negative = '-%n';
       
       // Escape
       
-      separator    = this.regexEscape(separator);
-      decimal_char = this.regexEscape(decimal_char);
-      negative     = this.regexEscape(negative);
+      decimal   = this.regexEscape(decimal);
+      negative  = this.regexEscape(negative);
       
-      // Remove negative formatting
+      // Determine negative formatting
       
-      nchars = negative.split('n');
-      nchars[0] = '^' + nchars[0];
+      nchars = negative.split('%n');
+      nchars[0] = '^.*?' + nchars[0];
       nchars[1] += '.*$';
       
+      var is_negative = false;
+      
       if (string.match(nchars[0]) && string.match(nchars[1])) {
-
-        string = string.replace(new RegExp(nchars[0]), '-');
-        
-        if (string.split('')[0] != '-')
-          string = '-' + string;
+        is_negative = true;
       }
       
-      // Replace separator and decimal_char
+      // Replace decimal character
       
-      string = string
-        .replace(new RegExp(separator, 'g'), '')
-        .replace(new RegExp(decimal_char), '.');
+      if (decimal != '\.') {
+        string = string.replace(new RegExp(decimal), '.');
+      }
+      
+      // Remove every non-numeric character (except ".")
+      
+      string = string.replace(/[^0-9\.]/g, '');
+      
+      if (is_negative) {
+        string = '-' + string;
+      }
       
       return parseFloat(string);
     },
