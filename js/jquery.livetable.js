@@ -240,10 +240,17 @@
     // Formats a number. Rounds to desired number of decimals.
     // Thousands separator, decimal character, and negative
     // number formatting are all customizeable.
-    // To customize negative number formatting, pass a string
-    // to the "negative" argument, using "n" as a placeholder
-    // for the negative number. Default value is "-n", but
-    // you may prefer to use "(n)" or "n-".
+    //
+    // To customize negative number formatting, supply a
+    // string to the "negative" option, using "%n" as a
+    // placeholder for the number and "%c" as a placeholder
+    // for the currency. Default value is "-%c%n", but
+    // you may prefer to use "(%c%n)".
+    //
+    // To customize positive number formatting, supply a
+    // string to the "positive" option, again using "%n"
+    // for the number and "%c" for the currency.
+    // Default formatting is "%c%n".
     
     formatNumber: function(number, options) {
       
@@ -258,13 +265,16 @@
       // Setup options
       
       options = $.extend({
-        currency:  '',
+        currency:  null,
         places:    null,
         separator: ',',
         decimal:   '.',
         negative:  '-%c%n',
         positive:  '%c%n'
       }, options);
+      
+      if (! options.currency)
+        options.currency = '';
       
       if (typeof(options.places) != 'number' || isNaN(options.places))
         options.places = parseFloat(options.places) || null;
