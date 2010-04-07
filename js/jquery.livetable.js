@@ -628,7 +628,6 @@
   });
 
   // Number
-  // Custom arguments
   //   - places
   //   - decimal
   //   - separator
@@ -665,6 +664,30 @@
       positive:  data.positive,
       currency:  data.currency
     }) + data.append;
+  });
+  
+  // Checkbox
+  //   - true
+  //   - false
+  
+  $.livetable.addType('checkbox', function(data, input, td) {
+    data = $.extend({on: 'True', off: 'False'}, data);
+    
+    input = $('<input type="checkbox" />').attr({
+      name: data.name,
+      id:   data.name
+    });
+    
+    var text = td.text();
+    
+    if (text == data.on)
+      input.attr('checked', true);
+    
+    return input;
+  }, function(data, input, td){
+    data = $.extend({on: 'True', off: 'False'}, data);
+    
+    return input.attr('checked') ? data.on : data.off;
   });
   
   // Plugin

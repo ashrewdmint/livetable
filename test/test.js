@@ -586,3 +586,34 @@ test('number', function(){
   var text = $.livetable.types[type].toText(data, input, td);
   equal(text, val, 'toText() should return formatted number value of input field');
 });
+
+test('checkbox', function(){
+  var type = 'checkbox';
+  var name = 'babbage';
+  var val  = 'Yes';
+  var td   = $('<td></td>').text(val);
+  var data = {
+    name: name,
+    on: 'Yes',
+    off: 'No'
+  };
+  
+  var default_input = $.livetable.defaultOptionsToField(data, null, td);
+  var input = $.livetable.types[type].toField(data, default_input, td);
+  
+  equal(input.get(0).nodeName.toLowerCase(), 'input', 'return an input field');
+  equal(input.attr('type'), 'checkbox', 'is checkbox');
+  equal(input.attr('name'), name, 'sets correct name');
+  equal(input.attr('id'), name, 'sets correct id');
+  equal(input.attr('checked'), true, 'sets correct value');
+  
+  td.empty().append(input);
+  
+  var text = $.livetable.types[type].toText(data, input, td);
+  equal(text, val, 'toText() returns correct value');
+  
+  input.attr('checked', false);
+  
+  text = $.livetable.types[type].toText(data, input, td);
+  equal(text, data.off, 'toText() returns correct value');
+});
